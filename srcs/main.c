@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/01 22:56:46 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 15:33:01 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,7 @@ int		main(int argc, char **argv)
 	if (argc <= 1)
 		print_help(&nmap);
 	parsing(&nmap, argc, argv);
-
-	//scan every host
 	ft_nmap(&nmap);
-
 	exit_nmap(&nmap, EXIT_SUCCESS);
 	return (0);
 }

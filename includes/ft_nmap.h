@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/02 11:29:23 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 13:08:20 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,18 +147,22 @@ typedef struct	s_nmap
 
 
 void		ft_nmap(t_nmap *nmap);
-void		print_config(t_nmap *nmap);
+void    	build_scanlist(t_nmap *nmap);
+
+t_thread_data	*allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offset);
+void			dispatch_threads(t_nmap *nmap, t_scan *scan);
+void			*scan_callback(void *data);
 
 uint16_t	get_portnb(uint16_t *ports);
 uint16_t	ft_checksum();
 
 //void		craft_packet();
-void		dispatch_threads(t_nmap *nmap, t_scan *scan);
+
 int			portscan(t_thread_data *dt, uint8_t type);
 
-t_thread_data *allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offset);
+//t_thread_data *allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offset);
 
-void		*scan_callback(void *data);
+
 
 
 void			print_help(t_nmap *nmap);

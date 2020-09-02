@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 12:32:31 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 15:35:15 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,72 +14,43 @@
 
 t_scan	*g_scan;
 
-void    push_scan(t_nmap *nmap, t_scan *scan)
+static void    print_config(t_nmap *nmap)
 {
-    t_scan *scan_ptr;
-
-    scan_ptr = NULL;
-    if (nmap->scan == NULL)
-        nmap->scan = scan;
-    else
-    {
-        scan_ptr = nmap->scan;
-        while (scan_ptr->next != NULL)
-            scan_ptr = scan_ptr->next;
-        scan_ptr->next = scan;
-    }
+	dprintf(STDERR_FILENO, "Scan configuration:\n");
+	dprintf(STDERR_FILENO, "Scan to perform: %s%s%s%s%s%s\n",
+		(nmap->type & SCAN_SYN) ?  "SYN " : "",
+		(nmap->type & SCAN_NULL) ?  "NULL " : "",
+		(nmap->type & SCAN_ACK) ?  "ACK " : "",
+		(nmap->type & SCAN_FIN) ?  "FIN " : "",
+		(nmap->type & SCAN_XMAS) ?  "XMAS " : "",
+		(nmap->type & SCAN_UDP) ?  "UDP " : "");
+	dprintf(STDERR_FILENO, "Amount of threads: %d\n", nmap->threads);
+	dprintf(STDERR_FILENO, "Go for scan.\n");
 }
-
-void    build_scan(t_nmap *nmap)
-{
-    t_scan  *scan;
-
-    dprintf(STDERR_FILENO, " \n");
-    for (int i = 0; nmap->ip[i] != NULL; i++)
-    {
-        dprintf(STDERR_FILENO, "=====> Creating scan for: %s\n", nmap->ip[i]);
-        scan = ft_memalloc(sizeof(t_scan));
-
-        scan->name = nmap->hostname[i];
-        scan->ip = nmap->ip[i];
-        scan->type = nmap->type;
-        scan->ports = nmap->ports;
-       // scan->sin = NULL;
-        scan->report = NULL;
-        scan->next = NULL;
-        push_scan(nmap, scan);
-    }
-    for (t_scan *ptr = nmap->scan; ptr != NULL; ptr = ptr->next)
-            dprintf(STDERR_FILENO, "  ✔  New scan : target %s (%s).\n\n", ptr->ip, ptr->name);
-}
-
-
 
 void    ft_nmap(t_nmap *nmap)
 {
-    uint16_t    ports_per_thread;
-    uint16_t    rest_ports;
+	t_thread_data   *pseudo_thread_data;
+	uint16_t		ports_per_thread;
+	uint16_t		rest_ports;
+	t_scan			*scan;
 
-    //print scan configuration
-    print_config(nmap);
-    
-    // build data structures
-    build_scan(nmap);
+	print_config(nmap);
+	build_scanlist(nmap);
 
-    for (t_scan *scan_ptr = nmap->scan; scan_ptr != NULL; scan_ptr = scan_ptr->next)
-    {
-        g_scan = scan_ptr;
-
-        if (nmap->threads == 0)
-        {
-            t_thread_data *pseudo_thread_data = allocate_thread_data(scan_ptr, 0, 0);
-            scan_callback((void*)pseudo_thread_data);
-            
-        }
-        else
-        {
-            dispatch_threads(nmap, scan_ptr);
-        }
-        dprintf(STDERR_FILENO, "Scan for %s finished\n", scan_ptr->ip);
-    }
+	for (scan = nmap->scan; scan != NULL; scan = scan->next)
+	{
+		g_scan = scan;
+		if (nmap->threads == 0)		/* Aucun thread */
+		{
+			/* Creation de la thread_data pour compatibilité avec le callback */
+			pseudo_thread_data = allocate_thread_data(scan, 0, 0);
+			scan_callback((void*)pseudo_thread_data);
+		}
+		else						/* Thread >= 1 */
+		{
+			dispatch_threads(nmap, scan);
+		}
+		dprintf(STDERR_FILENO, "Scan for %s finished\n", scan->ip);
+	}
 }

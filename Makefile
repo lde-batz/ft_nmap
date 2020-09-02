@@ -6,7 +6,7 @@
 #    By: seb <seb@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/01 17:52:09 by seb              ###   ########.fr        #
+#    Updated: 2020/09/02 15:37:06 by seb              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,19 +14,22 @@ NAME = ft_nmap
 
 CC=clang
 
-SRC = 	main.c \
-		help.c \
-		parsing.c \
-		parsing_ports.c \
-		parsing_file.c \
-		exit.c \
-		tools.c
+SRC += 	main.c
+SRC +=	help.c
+SRC +=	parsing.c
+SRC +=	parsing_ports.c
+SRC +=	parsing_file.c
+SRC +=	exit.c 
+SRC +=	tools.c
 SRC += ft_nmap.c
+SRC += scan_builder.c
 SRC += display.c
-SRC += thread.c
 SRC += callback.c
 SRC += packet_builder.c
 SRC += checksum.c
+SRC += threads.c
+SRC += send.c
+
 
 SRC_DIR = srcs/
 

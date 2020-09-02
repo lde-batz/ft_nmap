@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/01 17:36:14 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 12:49:17 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,8 @@ void	parsing(t_nmap *nmap, int argc, char **argv)
 	i = -1;
 	
 	while (++i < nmap->ip_len)
-		printf("hostname = %s  |  ip = %s\n", nmap->hostname[i], nmap->ip[i]);
+		printf("=> Hostname = %s  |  ip = %s\n", nmap->hostname[i], nmap->ip[i]);
 
-dprintf(2, "Type is : %d\n", nmap->type);
 	if (nmap->type == 0)
 		nmap->type = ~(nmap->type);
-		dprintf(2, "Type is : %d\n", nmap->type);
 }
