@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 15:35:15 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 18:22:23 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ static void    print_config(t_nmap *nmap)
 void    ft_nmap(t_nmap *nmap)
 {
 	t_thread_data   *pseudo_thread_data;
-	uint16_t		ports_per_thread;
-	uint16_t		rest_ports;
 	t_scan			*scan;
 
 	print_config(nmap);

@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 17:53:10 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 18:31:26 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,8 @@
 
 t_scan	*g_scan;
 
-/*   Juste du debug inutile
-void print_packet_info(const uint8_t *packet, struct pcap_pkthdr packet_header) {
-    printf("Packet capture length: %d\n", packet_header.caplen);
-    printf("Packet total length %d\n", packet_header.len);
-}
-
+  
+/*
 uint32_t	decode_ip_packet(const uint8_t *header_start)
 {
 	const struct ip_hdr		*ip_header;
@@ -53,16 +49,49 @@ static char *hex_to_type(uint8_t hex)
 	return ("Unknown.");
 }
 
+
 /* Libpcap dispatch callback */
 void	decode_response(uint8_t *args, const struct pcap_pkthdr *hdr, const uint8_t *packet)
 {
-	struct ip	*ip;
+	(void)args;
+	const struct sniff_ethernet *ethernet; /* The ethernet header */
+	const struct sniff_ip *ip; /* The IP header */
+	const struct sniff_tcp *tcp; /* The TCP header */
+	const uint8_t *payload; /* Packet payload */
 
-	ip = (struct ip*)packet;
+	u_int size_ip;
+	u_int size_tcp;
+
+	ethernet = (struct sniff_ethernet*)(packet);
+	ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
+	size_ip = IP_HL(ip)*4;
+
+//	pthread_mutex_lock(&(g_scan->mutex));
+
+	dprintf(STDERR_FILENO, "Caught a %hu bytes packet\n", ntohs(ip->ip_len));
+
+//	pthread_mutex_unlock(&(g_scan->mutex));
 	
+	if (size_ip < 20) {
+		printf("   * Invalid IP header length: %u bytes\n", size_ip);
+		return;
+	}
+	tcp = (struct sniff_tcp*)(packet + SIZE_ETHERNET + size_ip);
+	size_tcp = TH_OFF(tcp)*4;
+	if (size_tcp < 20) {
+		printf("   * Invalid TCP header length: %u bytes\n", size_tcp);
+		return;
+	}
+	payload = (uint8_t *)(packet + SIZE_ETHERNET + size_ip + size_tcp);
 }
 
-int    portscan(t_thread_data *data, uint8_t type)
+void print_packet_info(uint8_t *args, const struct pcap_pkthdr packet_header, const uint8_t *packet)
+{
+    printf("Packet capture length: %d\n", packet_header.caplen);
+    printf("Packet total length %d\n", packet_header.len);
+}
+
+int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 {
 	//Libpcap
 	char        *device;
@@ -77,16 +106,19 @@ int    portscan(t_thread_data *data, uint8_t type)
 	/* Ouverture du device et optention du handle */
 	handle = open_pcap_device(device, errbuf);
 
-	apply_pcap_filter(handle, net);
+	apply_pcap_filter(handle, net, port);
 	
 
+	/* CREER SOCKET & ETC... */
+	
 	/* INSERER CREATION DE PACKET SELON LE TYPE DE SCAN */
 
 	/* INSERER ENVOI DE PACKET ICI */
+	send_packet();
 
 	/* INSERER RéCUPéRATION DE PACKET AVE LIBPCAP */
 
-	pcap_dispatch(handle, 1, decode_response, argument);
+	pcap_dispatch(handle, 1, decode_response, NULL);
 
 	pcap_close(handle);
 
@@ -128,8 +160,8 @@ void    *scan_callback(void *callback_data)
 
 			pthread_mutex_unlock(&(g_scan->mutex));
 			/* Fin du gros debug */
-			
-			portscan(tdata, btshift);
+			for (int i = 0; tdata->port_list[i] != 0; i++)
+				portscan(tdata, btshift, tdata->port_list[i]);
 		}
 	}
 	dprintf(2, "\n");

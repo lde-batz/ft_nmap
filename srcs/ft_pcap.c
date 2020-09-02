@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 17:47:05 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 17:51:32 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 18:35:55 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ pcap_t	*open_pcap_device(char *device, char errbuf[1024])
 	
 	/* Ouverture du device pour live capture */
 	ft_memset(errbuf, 0, PCAP_ERRBUF_SIZE);
-	if ((handle = pcap_open_live(device, BUFSIZ, 1, 3, errbuf)) == NULL)
+	if ((handle = pcap_open_live(device, BUFSIZ, 1, TIMEOUT_MS, errbuf)) == NULL)
 	{
 		dprintf(STDERR_FILENO, "Error: pcap_open_live() failed: %s\n", errbuf);
 		pthread_mutex_unlock(&(g_scan->mutex));
@@ -59,14 +59,14 @@ pcap_t	*open_pcap_device(char *device, char errbuf[1024])
 	return (handle);
 }
 
-void	apply_pcap_filter(pcap_t *handle, bpf_u_int32 net)
+void	apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port)
 {
 	char		filter[512];
 	struct		bpf_program	bpf;
 
 	pthread_mutex_lock(&(g_scan->mutex));
-	
-	sprintf(filter, "src port %d or dst port 80", 80);
+//	dprintf(STDERR_FILENO, "src port %u or dst port %u", port, port);
+	sprintf(filter, "src port %u or dst port %u", port, port);
 	//	sprintf(filter, "src host %s and src port %d and dst host %s", );
 
 	/* Compilation du filtre */
