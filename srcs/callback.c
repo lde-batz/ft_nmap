@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 12:23:38 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 12:32:29 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,6 +263,7 @@ void    dispatch_threads(t_nmap *nmap, t_scan *scan)
 
 dprintf(STDERR_FILENO, "Launching %d threads...\n", nmap->threads);
 	ports_per_thread = get_portnb(nmap->ports) / nmap->threads;
+	
     dprintf(STDERR_FILENO, "Scanning ~%d ports per thread\n", ports_per_thread);
 	if (ports_per_thread == 0)
 	{

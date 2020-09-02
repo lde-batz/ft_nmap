@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 10:22:33 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 12:32:31 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,12 @@ void    ft_nmap(t_nmap *nmap)
     for (t_scan *scan_ptr = nmap->scan; scan_ptr != NULL; scan_ptr = scan_ptr->next)
     {
         g_scan = scan_ptr;
+
         if (nmap->threads == 0)
         {
             t_thread_data *pseudo_thread_data = allocate_thread_data(scan_ptr, 0, 0);
             scan_callback((void*)pseudo_thread_data);
+            
         }
         else
         {
