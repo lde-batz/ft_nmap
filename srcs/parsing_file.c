@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_file.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 20:59:08 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/08/18 14:37:01 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/01 15:19:35 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	parsing_file(t_nmap *nmap, char *file)
 	t_hostname_file	*l_hostname;
 
 	len = 0;
+	fd = 0;
 	l_hostname = NULL;
 	if (!(ft_strcmp(file, "/dev/zero")) || (fd = open(file, O_RDONLY)) < 0)
 	{

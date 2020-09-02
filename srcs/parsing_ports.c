@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_ports.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/16 11:09:28 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/08/16 19:27:45 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/01 16:21:14 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void		parsing_ports(t_nmap *nmap, char *ports)
 	if ((num_ports = get_all_ports(ports)))
 	{
 		nb_ports = cnt_nb_ports(num_ports);
-		if (!(nmap->ports = (int*)malloc(sizeof(int) * (nb_ports + 1))))
+		if (!(nmap->ports = (uint16_t*)malloc(sizeof(uint16_t) * (nb_ports + 1))))
 		{
 			free_num_ports(num_ports);
 			exit_nmap(nmap, EXIT_FAILURE);

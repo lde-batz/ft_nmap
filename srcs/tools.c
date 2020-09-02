@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   tools.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 17:26:15 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/08/16 15:47:33 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/01 17:56:03 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nmap.h"
+
+uint16_t	get_portnb(uint16_t *ports)
+{
+	int	i;
+
+	i = 0;
+	while (ports[i] != 0 && i < 1024)
+		i++;
+	return (i);
+}
 
 void	free_double_char(char **str)
 {

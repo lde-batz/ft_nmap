@@ -1,3 +1,3 @@
-8.8.8.8
+comcast.com
 google.com
 42.fr

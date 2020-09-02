@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/08/18 15:04:05 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/01 17:36:14 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	parsing_ip(t_nmap *nmap, char *ip)
 		perror("inet_ntop()");
 		exit_nmap(nmap, EXIT_FAILURE);
 	}
-	nmap->ip = (char**)malloc(sizeof(char*));
-	nmap->hostname = (char**)malloc(sizeof(char*));
+	nmap->ip = (char**)malloc(sizeof(char*)*2);
+	nmap->hostname = (char**)malloc(sizeof(char*)*2);
 	if (!nmap->ip || !nmap->hostname)
 	{
 		perror("malloc()");
@@ -43,11 +43,13 @@ void	parsing_ip(t_nmap *nmap, char *ip)
 	nmap->hostname[0] = ft_strdup(ip);
 	nmap->ip[0] = ft_strdup(host);
 	nmap->ip_len = 1;
+	nmap->ip[1] = NULL;
+	nmap->hostname[1] = NULL;
 }
 
 void	parsing_speedup(t_nmap *nmap, char *speedup)
 {
-	if (!ft_atoi_strict(speedup, &nmap->theads, 0) || nmap->theads < 0 || nmap->theads > 250)
+	if (!ft_atoi_strict(speedup, &nmap->threads, 0) || nmap->threads < 0 || nmap->threads > 250)
 	{
 		printf("Bad argurment --speedup '%s'\n\n", speedup);
 		print_help(nmap);
@@ -64,17 +66,17 @@ void	parsing_scan(t_nmap *nmap, char *scan)
 	while (scan_split[++i])
 	{
 		if (ft_strcmp(scan_split[i], "SYN") == 0)
-			nmap->scans = nmap->scans | SCAN_SYN;
+			nmap->type = nmap->type | SCAN_SYN;
 		else if (ft_strcmp(scan_split[i], "NULL") == 0)
-			nmap->scans = nmap->scans | SCAN_NULL;
+			nmap->type = nmap->type | SCAN_NULL;
 		else if (ft_strcmp(scan_split[i], "ACK") == 0)
-			nmap->scans = nmap->scans | SCAN_ACK;
+			nmap->type = nmap->type | SCAN_ACK;
 		else if (ft_strcmp(scan_split[i], "FIN") == 0)
-			nmap->scans = nmap->scans | SCAN_FIN;
+			nmap->type = nmap->type | SCAN_FIN;
 		else if (ft_strcmp(scan_split[i], "XMAS") == 0)
-			nmap->scans = nmap->scans | SCAN_XMAS;
+			nmap->type = nmap->type | SCAN_XMAS;
 		else if (ft_strcmp(scan_split[i], "UDP") == 0)
-			nmap->scans = nmap->scans | SCAN_UDP;
+			nmap->type = nmap->type | SCAN_UDP;
 		else
 		{
 			free_double_char(scan_split);
@@ -117,8 +119,12 @@ void	parsing(t_nmap *nmap, int argc, char **argv)
 	if(!nmap->ip_len)
 		print_help(nmap);
 	i = -1;
+	
 	while (++i < nmap->ip_len)
-	{
 		printf("hostname = %s  |  ip = %s\n", nmap->hostname[i], nmap->ip[i]);
-	}
+
+dprintf(2, "Type is : %d\n", nmap->type);
+	if (nmap->type == 0)
+		nmap->type = ~(nmap->type);
+		dprintf(2, "Type is : %d\n", nmap->type);
 }
