@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/02 13:08:20 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 17:49:31 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,10 @@ void    	build_scanlist(t_nmap *nmap);
 t_thread_data	*allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offset);
 void			dispatch_threads(t_nmap *nmap, t_scan *scan);
 void			*scan_callback(void *data);
+
+char			*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024]);
+pcap_t			*open_pcap_device(char *device, char errbuf[1024]);
+void			apply_pcap_filter(pcap_t *handle, bpf_u_int32 net);
 
 uint16_t	get_portnb(uint16_t *ports);
 uint16_t	ft_checksum();

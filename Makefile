@@ -6,7 +6,7 @@
 #    By: seb <seb@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/02 15:37:06 by seb              ###   ########.fr        #
+#    Updated: 2020/09/02 17:49:39 by seb              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC += packet_builder.c
 SRC += checksum.c
 SRC += threads.c
 SRC += send.c
+SRC += ft_pcap.c
 
 
 SRC_DIR = srcs/
