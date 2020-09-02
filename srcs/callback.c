@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 18:31:26 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/02 20:15:37 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,50 +49,34 @@ static char *hex_to_type(uint8_t hex)
 	return ("Unknown.");
 }
 
-
 /* Libpcap dispatch callback */
 void	decode_response(uint8_t *args, const struct pcap_pkthdr *hdr, const uint8_t *packet)
 {
 	(void)args;
-	const struct sniff_ethernet *ethernet; /* The ethernet header */
-	const struct sniff_ip *ip; /* The IP header */
-	const struct sniff_tcp *tcp; /* The TCP header */
-	const uint8_t *payload; /* Packet payload */
-
-	u_int size_ip;
-	u_int size_tcp;
-
-	ethernet = (struct sniff_ethernet*)(packet);
-	ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
-	size_ip = IP_HL(ip)*4;
-
-//	pthread_mutex_lock(&(g_scan->mutex));
-
-	dprintf(STDERR_FILENO, "Caught a %hu bytes packet\n", ntohs(ip->ip_len));
-
-//	pthread_mutex_unlock(&(g_scan->mutex));
+	(void)hdr;
 	
-	if (size_ip < 20) {
-		printf("   * Invalid IP header length: %u bytes\n", size_ip);
-		return;
-	}
-	tcp = (struct sniff_tcp*)(packet + SIZE_ETHERNET + size_ip);
-	size_tcp = TH_OFF(tcp)*4;
-	if (size_tcp < 20) {
-		printf("   * Invalid TCP header length: %u bytes\n", size_tcp);
-		return;
-	}
-	payload = (uint8_t *)(packet + SIZE_ETHERNET + size_ip + size_tcp);
+	const struct ip *iphdr; /* The IP header */
+
+	iphdr = (struct ip*)(packet + SIZE_ETHERNET);
+	
+	pthread_mutex_lock(&(g_scan->mutex));
+
+	dprintf(STDERR_FILENO, "Caught a %hu bytes packet\n", ntohs(iphdr->ip_len));
+
+	pthread_mutex_unlock(&(g_scan->mutex));
+
 }
 
 void print_packet_info(uint8_t *args, const struct pcap_pkthdr packet_header, const uint8_t *packet)
 {
+	(void)args;(void)packet;
     printf("Packet capture length: %d\n", packet_header.caplen);
     printf("Packet total length %d\n", packet_header.len);
 }
 
 int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 {
+	(void)data;(void)type;
 	//Libpcap
 	char        *device;
 	bpf_u_int32 mask;
