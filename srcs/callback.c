@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 20:15:37 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/03 17:12:07 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,33 +50,44 @@ static char *hex_to_type(uint8_t hex)
 }
 
 /* Libpcap dispatch callback */
-void	decode_response(uint8_t *args, const struct pcap_pkthdr *hdr, const uint8_t *packet)
+void	decode_response(uint8_t *data, const struct pcap_pkthdr *hdr, const uint8_t *packet)
 {
-	(void)args;
-	(void)hdr;
-	
-	const struct ip *iphdr; /* The IP header */
+	t_thread_data	*thread_data;
+	u_int32_t		ip_type;
+	uint8_t			*return_flags;
 
-	iphdr = (struct ip*)(packet + SIZE_ETHERNET);
-	
-	pthread_mutex_lock(&(g_scan->mutex));
+	thread_data = (t_thread_data *)args;
+	printf("=== Got a %d byte packet ===\n", hdr->len);
+	ip_type = decode_ip_packet(packet + ETHER_HDR_LEN);
+	switch (ip_type)
+	{
+		case TCP_CODE :
+			return_flags = decode_tcp_packet(data, packet + ETHER_HDR_LEN + sizeof (struct ip));
+			break ;
 
-	dprintf(STDERR_FILENO, "Caught a %hu bytes packet\n", ntohs(iphdr->ip_len));
+		case UDP_CODE :
+			decode_udp_packet(packet + ETHER_HDR_LEN + sizeof (struct ip));
+			break ;
 
-	pthread_mutex_unlock(&(g_scan->mutex));
+		default :
+			printf(" --- Layer 4 protocol not supported: %u ---\n", ip_type);
+			break ;
+	}
 
 }
-
+/*
 void print_packet_info(uint8_t *args, const struct pcap_pkthdr packet_header, const uint8_t *packet)
 {
 	(void)args;(void)packet;
     printf("Packet capture length: %d\n", packet_header.caplen);
     printf("Packet total length %d\n", packet_header.len);
 }
+*/
 
 int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 {
 	(void)data;(void)type;
+
 	//Libpcap
 	char        *device;
 	bpf_u_int32 mask;
@@ -101,8 +112,9 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	send_packet();
 
 	/* INSERER RéCUPéRATION DE PACKET AVE LIBPCAP */
-
-	pcap_dispatch(handle, 1, decode_response, NULL);
+	data->current_type = type;
+	data->current_port = port;
+	pcap_dispatch(handle, 1, decode_response, data);
 
 	pcap_close(handle);
 

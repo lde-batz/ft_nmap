@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 18:22:23 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/03 15:52:30 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void    ft_nmap(t_nmap *nmap)
 	t_scan			*scan;
 
 	print_config(nmap);
+	
 	build_scanlist(nmap);
 
 	for (scan = nmap->scan; scan != NULL; scan = scan->next)

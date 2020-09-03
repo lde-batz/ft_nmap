@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/02 20:13:52 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/03 17:12:09 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@
 
 
 #define ETHER_ADDR_LEN	6
-#define SIZE_ETHERNET 	14
+#define ETHER_HDR_LEN	14
+#define ICMP_CODE	1
+#define TCP_CODE	6
+#define UDP_CODE	17
 
 # define SCAN_SYN	0x20
 # define SCAN_NULL	0x10 
@@ -59,6 +62,10 @@ typedef struct	s_hostname_file
 	struct s_hostname_file	*next;
 }				t_hostname_file;
 
+# define PORT_CLOSED	0x1
+# define PORT_OPEN		0x2
+# define PORT_FILTERED	0x4
+
 typedef struct s_scan_report
 {
 	uint16_t	portnumber;
@@ -78,6 +85,8 @@ typedef struct	s_thread_data
 	char				*hostname;
 	char				*ipv4;
 	struct sockaddr_in	*sin;
+	uint16_t			current_port;
+	uint8_t				current_type;
 	uint16_t			*port_list;
 	uint8_t				type;
 	struct s_thread_data *next;
@@ -123,6 +132,11 @@ void			apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port);
 
 uint16_t		get_portnb(uint16_t *ports);
 uint16_t		ft_checksum();
+
+uint32_t		decode_ip_packet(const uint8_t *header_start);
+uint32_t		decode_tcp_packet(const uint8_t *header_start);
+uint32_t		decode_udp_packet(const uint8_t *header_start);
+
 int				send_packet(void);
 
 int    			portscan(t_thread_data *data, uint8_t type, uint16_t port);
