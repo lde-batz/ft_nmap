@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_ports.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/16 11:09:28 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/01 16:21:14 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 15:48:26 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,12 @@ void		parsing_ports(t_nmap *nmap, char *ports)
 
 	if ((num_ports = get_all_ports(ports)))
 	{
-		nb_ports = cnt_nb_ports(num_ports);
+		if ((nb_ports = cnt_nb_ports(num_ports)) > 1024)
+		{
+			free_num_ports(num_ports);
+			printf("Bad argurment --ports '%s' : number of ports 1024 MAX\n\n", ports);
+			print_help(nmap);
+		}
 		if (!(nmap->ports = (uint16_t*)malloc(sizeof(uint16_t) * (nb_ports + 1))))
 		{
 			free_num_ports(num_ports);
