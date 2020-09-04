@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/04 18:29:50 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 19:07:46 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 
 	pthread_mutex_lock(&(g_scan->mutex));
 	/* option 1: set non-blocking (fast) */
+	
 	pcap_setnonblock(handle, 1, errbuf);
 
 	pthread_mutex_unlock(&(g_scan->mutex));
@@ -120,6 +121,8 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
     double elapsedTime = 0.0;
 	int dispatcher = 0;
 	
+//	pcap_breakloop(handle);
+
     gettimeofday(&t1, NULL);
 	while (elapsedTime < TIMEOUT && dispatcher == 0)
 	{

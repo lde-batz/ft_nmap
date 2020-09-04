@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 18:30:28 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 19:08:44 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 # define SCAN_UDP	0x20 
 
 # define MAX_PORTS	1024
-# define TIMEOUT	1000
+# define TIMEOUT	2000
 # define RETRIES	2
 
 typedef struct	s_num_ports

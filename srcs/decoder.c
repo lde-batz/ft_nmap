@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/04 16:53:18 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 19:10:32 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ uint8_t	decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_star
 	header_size = 4 * tcp_header->th_off;
 	resp_flags = tcp_header->th_flags;
 	
+
 	
 	for (uint8_t shift = 1, index = 0; shift < 64 && index < 5; shift = shift << 1, index++)
 		if (thread_data->current_type == shift)

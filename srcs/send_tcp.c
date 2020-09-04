@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send_tcp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 18:12:03 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/04 18:52:39 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ int		tcphdr_checksum(struct tcphdr *tcph, struct sockaddr_in *saddr, struct sock
 void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 {
 	int					sockfd;
-	char				datagram[4096];
-	char				*ip_source = "192.168.0.45";
+	char				datagram[512];
+	char				*ip_source = "192.168.0.28";
 	struct tcphdr		*tcph;
 	struct sockaddr_in	saddr;
 	struct sockaddr_in	daddr;
@@ -129,6 +129,7 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 
 
 /*		Envoie du packet TCP		*/
+	//dprintf(2, "Envoi packet dest: %s port %s source %s port %s \n", saddr.sin_addr.s_addr);
 	if (sendto(sockfd, datagram, sizeof(struct ip) + sizeof(struct tcphdr), 0, (struct sockaddr *)&daddr, sizeof(daddr)) < 0)
 	{
 		perror("Error sendto():");
