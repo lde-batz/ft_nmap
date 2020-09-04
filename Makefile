@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+         #
+#    By: seb <seb@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/04 17:34:09 by lde-batz         ###   ########.fr        #
+#    Updated: 2020/09/04 18:30:39 by seb              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,8 @@ SRC += send_tcp.c
 SRC += send_udp.c
 SRC += ft_pcap.c
 SRC += socket.c
+SRC += decoder.c
+SRC += handler.c
 
 
 SRC_DIR = srcs/
@@ -58,7 +60,7 @@ LIBPCAP = -lpcap
 LIBPTHREAD = -lpthread
 
 #Compile debug flags
-CFLAGS += -Wall -Wextra -Wdeprecated-declarations
+CFLAGS += -Wall -Wextra
 ifeq ($(d), 1)
 	CFLAGS += -g3 -fsanitize=address,undefined
 else ifeq ($(d), 2)

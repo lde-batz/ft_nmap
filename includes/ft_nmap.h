@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 18:12:20 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/04 18:30:28 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,33 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/socket.h>
+# include <signal.h>
 
 # include <netdb.h> // gethostbyname
 # include <arpa/inet.h> // inet_ntoa
 # include <netinet/ip.h> // ip header
+# include <netinet/ip_icmp.h>
 # include <netinet/tcp.h> // tcp header
 # include <netinet/udp.h> // udp header
 #include <netinet/in.h>
 # include <ifaddrs.h> //getifaddrs
 
 #define ETHER_ADDR_LEN	6
-#define SIZE_ETHERNET 	14
+#define ETHER_HDR_LEN	14
+#define ICMP_CODE	1
+#define TCP_CODE	6
+#define UDP_CODE	17
 
-# define SCAN_SYN	0x20
-# define SCAN_NULL	0x10 
-# define SCAN_ACK	0x08
-# define SCAN_FIN	0x04
-# define SCAN_XMAS	0x02
-# define SCAN_UDP	0x01 
+# define SCAN_SYN	0x01
+# define SCAN_NULL	0x04 
+# define SCAN_ACK	0x02
+# define SCAN_FIN	0x08
+# define SCAN_XMAS	0x10
+# define SCAN_UDP	0x20 
 
-# define MAX_PORTS 1024
-# define TIMEOUT_MS	2
+# define MAX_PORTS	1024
+# define TIMEOUT	1000
+# define RETRIES	2
 
 typedef struct	s_num_ports
 {
@@ -70,6 +76,11 @@ typedef struct	s_pseudo_header
 	struct tcphdr	tcp;
 }				t_pseudo_header;
 
+# define PORT_CLOSED		0x1
+# define PORT_OPEN			0x2
+# define PORT_FILTERED		0x4
+# define PORT_UNFILTERED 	0x8
+# define PORT_UNKNOWN		0
 
 typedef struct s_scan_report
 {
@@ -90,7 +101,10 @@ typedef struct	s_thread_data
 	char				*hostname;
 	char				*ipv4;
 	struct sockaddr_in	*sin;
+	uint16_t			current_port;
+	uint8_t				current_type;
 	uint16_t			*port_list;
+	t_scan_report		*report;
 	uint8_t				type;
 	struct s_thread_data *next;
 }				t_thread_data;
@@ -122,6 +136,12 @@ typedef struct	s_nmap
 }				t_nmap;
 
 
+uint8_t		syn_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
+uint8_t		ack_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
+uint8_t		null_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
+uint8_t		fin_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
+uint8_t		xmas_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
+
 void			ft_nmap(t_nmap *nmap);
 void			build_scanlist(t_nmap *nmap);
 
@@ -135,15 +155,18 @@ void			apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port);
 
 uint16_t		get_portnb(uint16_t *ports);
 uint16_t		ft_checksum();
+
 int				send_packet(t_thread_data *data, uint8_t type, uint16_t port);
 void			send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port);
 void			send_udp_packet(t_thread_data *data, uint16_t port);
 int				checksum(unsigned short	*buf, int len);
 
+uint32_t		decode_ip_packet(const uint8_t *header_start);
+uint8_t			decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_start);
+uint32_t		decode_udp_packet(const uint8_t *header_start);
+uint32_t		decode_icmp_packet(t_thread_data *thread_data, const uint8_t *header_start);
+
 int				portscan(t_thread_data *data, uint8_t type, uint16_t port);
-
-
-
 
 void			print_help(t_nmap *nmap);
 
