@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/02 20:13:52 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 15:31:53 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <netinet/tcp.h> // tcp header
 # include <netinet/udp.h> // udp header
 #include <netinet/in.h>
-
+# include <ifaddrs.h> //getifaddrs
 
 #define ETHER_ADDR_LEN	6
 #define SIZE_ETHERNET 	14
@@ -58,6 +58,18 @@ typedef struct	s_hostname_file
 	char					*ip;
 	struct s_hostname_file	*next;
 }				t_hostname_file;
+
+typedef struct	s_pseudo_header
+{
+	unsigned int	source_address;
+	unsigned int	dest_address;
+	unsigned char	placeholder;
+	unsigned char	protocol;
+	unsigned short	tcp_length;
+	
+	struct tcphdr	tcp;
+}				t_pseudo_header;
+
 
 typedef struct s_scan_report
 {
@@ -111,7 +123,7 @@ typedef struct	s_nmap
 
 
 void			ft_nmap(t_nmap *nmap);
-void    		build_scanlist(t_nmap *nmap);
+void			build_scanlist(t_nmap *nmap);
 
 t_thread_data	*allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offset);
 void			dispatch_threads(t_nmap *nmap, t_scan *scan);
@@ -123,9 +135,11 @@ void			apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port);
 
 uint16_t		get_portnb(uint16_t *ports);
 uint16_t		ft_checksum();
-int				send_packet(void);
+int				send_packet(t_thread_data *data, uint8_t type, uint16_t port);
+void			send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port);
+int				checksum(unsigned short	*buf, int len);
 
-int    			portscan(t_thread_data *data, uint8_t type, uint16_t port);
+int				portscan(t_thread_data *data, uint8_t type, uint16_t port);
 
 
 

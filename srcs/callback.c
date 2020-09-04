@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   callback.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 20:15:37 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/03 17:46:55 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	/* INSERER CREATION DE PACKET SELON LE TYPE DE SCAN */
 
 	/* INSERER ENVOI DE PACKET ICI */
-	send_packet();
+	send_packet(data, type, port);
 
 	/* INSERER RéCUPéRATION DE PACKET AVE LIBPCAP */
 
@@ -126,7 +126,6 @@ void    *scan_callback(void *callback_data)
 	}
 
 	tdata = (struct s_thread_data*)callback_data;
-	
 	/* Itération sur le field 'type' pour effecter chaque scan */
 	for (uint8_t btshift = 1; btshift < 64; btshift = btshift << 1)
 	{
