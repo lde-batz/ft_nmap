@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/03 15:52:30 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 16:47:45 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,34 @@ static void    print_config(t_nmap *nmap)
 		(nmap->type & SCAN_UDP) ?  "UDP " : "");
 	dprintf(STDERR_FILENO, "Amount of threads: %d\n", nmap->threads);
 	dprintf(STDERR_FILENO, "Go for scan.\n");
+}
+
+char *status_to_str(uint8_t status)
+{
+	if (status == PORT_CLOSED)
+		return ("CLOSED");
+	else if (status == PORT_OPEN)
+		return ("OPEN");
+	else if (status == PORT_FILTERED)
+		return ("FILTERED");
+	else if (status == PORT_UNFILTERED)
+		return ("UNFILTERED");
+	else if (status & PORT_OPEN && status & PORT_FILTERED)
+		return ("OPEN | FILTERED");
+	else
+	{
+		return ("UNKNOWN");
+	}
+}
+
+void	show_report(t_scan *scan)
+{
+	printf("\n");
+	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
+	{
+		printf("- Port %d\t\tSYN(%s) ACK(%s) XMAS(%s)\n", rep->portnumber,
+		status_to_str(rep->syn_status), status_to_str(rep->ack_status), status_to_str(rep->xmas_status));
+	}
 }
 
 void    ft_nmap(t_nmap *nmap)
@@ -51,5 +79,6 @@ void    ft_nmap(t_nmap *nmap)
 			dispatch_threads(nmap, scan);
 		}
 		dprintf(STDERR_FILENO, "Scan for %s finished\n", scan->ip);
+		show_report(scan);
 	}
 }

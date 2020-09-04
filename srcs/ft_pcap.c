@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 17:47:05 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 18:35:55 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 15:16:00 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,20 @@
 
 char	*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024])
 {
-	char *device;
+	char 		*device;
+	pcap_if_t	*interfaces;
 
 	pthread_mutex_lock(&(g_scan->mutex));
 	
 	/* Détection du device réseau */
-	if ((device = pcap_lookupdev(errbuf)) == NULL)
+	if (pcap_findalldevs(&interfaces, errbuf) == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: pcap_lookupdev() failed: %s\n", errbuf);
+		dprintf(STDERR_FILENO, "Error: pcap_findalldevs() failed: %s\n", errbuf);
 		pthread_mutex_unlock(&(g_scan->mutex));
 		pthread_exit(NULL);
 	}
-
+	device = interfaces->name;
+	
 	/* Détéction et stockage du réseau & netmask */
 	if (pcap_lookupnet(device, net, mask, errbuf) != 0)
 	{
@@ -46,7 +48,7 @@ pcap_t	*open_pcap_device(char *device, char errbuf[1024])
 	
 	/* Ouverture du device pour live capture */
 	ft_memset(errbuf, 0, PCAP_ERRBUF_SIZE);
-	if ((handle = pcap_open_live(device, BUFSIZ, 1, TIMEOUT_MS, errbuf)) == NULL)
+	if ((handle = pcap_open_live(device, BUFSIZ, 1, 25, errbuf)) == NULL)
 	{
 		dprintf(STDERR_FILENO, "Error: pcap_open_live() failed: %s\n", errbuf);
 		pthread_mutex_unlock(&(g_scan->mutex));

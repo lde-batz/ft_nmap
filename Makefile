@@ -6,7 +6,7 @@
 #    By: seb <seb@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/03 12:13:53 by seb              ###   ########.fr        #
+#    Updated: 2020/09/04 13:55:09 by seb              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRC += send.c
 SRC += ft_pcap.c
 SRC += socket.c
 SRC += decoder.c
+SRC += handler.c
 
 
 SRC_DIR = srcs/
@@ -57,7 +58,7 @@ LIBPCAP = -lpcap
 LIBPTHREAD = -lpthread
 
 #Compile debug flags
-CFLAGS += -Wall -Wextra -Wdeprecated-declarations
+CFLAGS += -Wall -Wextra
 ifeq ($(d), 1)
 	CFLAGS += -g3 -fsanitize=address,undefined
 else ifeq ($(d), 2)
