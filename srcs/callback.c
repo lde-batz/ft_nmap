@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/03 17:12:07 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/03 19:42:25 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 
 	/* Ouverture du device et optention du handle */
 	handle = open_pcap_device(device, errbuf);
-
+	
 	apply_pcap_filter(handle, net, port);
 	
 
