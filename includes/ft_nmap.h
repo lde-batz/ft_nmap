@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 15:31:53 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/04 18:12:20 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ uint16_t		get_portnb(uint16_t *ports);
 uint16_t		ft_checksum();
 int				send_packet(t_thread_data *data, uint8_t type, uint16_t port);
 void			send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port);
+void			send_udp_packet(t_thread_data *data, uint16_t port);
 int				checksum(unsigned short	*buf, int len);
 
 int				portscan(t_thread_data *data, uint8_t type, uint16_t port);

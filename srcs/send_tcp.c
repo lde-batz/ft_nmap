@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 15:31:00 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/04 18:12:03 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	init_tcphdr(struct tcphdr *tcph, uint8_t type, uint16_t port)
 {
 	tcph->source = htons(54321);
 	tcph->dest = htons(port);
-	tcph->seq = htonl(1105024978);;
+	tcph->seq = htonl(1105024978);
 	tcph->ack_seq = 0;
 	tcph->doff = sizeof(struct tcphdr) / 4;
 	tcph->fin = (type & SCAN_FIN || type & SCAN_XMAS) ? 1 : 0;
@@ -98,11 +98,10 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 	struct sockaddr_in	daddr;
 
 
-/*		Initialisation du socket		*/
+/*		Initialisation du socket TCP		*/
 	sockfd = init_socket();
 
 /*		Initialisation adresse source		*/
-	daddr.sin_family = AF_INET;
 	if (inet_pton(AF_INET, ip_source, &saddr.sin_addr) != 1)
 	{
 		perror("Error inet_pton:");
@@ -110,6 +109,7 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 	}
 
 /*		Initialisation adresse destination		*/
+	daddr.sin_family = AF_INET;
 	if (inet_pton(AF_INET, data->ipv4, &daddr.sin_addr) != 1)
 	{
 		perror("Error inet_pton:");
@@ -135,7 +135,8 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 		exit(EXIT_FAILURE);
 	}
 
-
+/*		Envoie du packet TCP		*/
+	close(sockfd);
 
 /*
 	struct ifaddrs *ifap, *ifa;

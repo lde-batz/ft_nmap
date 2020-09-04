@@ -6,7 +6,7 @@
 #    By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/04 15:29:26 by lde-batz         ###   ########.fr        #
+#    Updated: 2020/09/04 17:34:09 by lde-batz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SRC += checksum.c
 SRC += threads.c
 SRC += send.c
 SRC += send_tcp.c
+SRC += send_udp.c
 SRC += ft_pcap.c
 SRC += socket.c
 
