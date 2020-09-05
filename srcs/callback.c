@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/04 19:07:46 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:02:39 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,10 @@ void	decode_response(uint8_t *data, const struct pcap_pkthdr *hdr, const uint8_t
 {
 	t_thread_data	*thread_data;
 	u_int32_t		ip_type;
-	uint8_t			return_flags;
 
 	thread_data = (t_thread_data *)data;
 	(void)hdr;
 	pthread_mutex_lock(&(g_scan->mutex));
-//	printf("=== Got a %d byte packet ===\n", hdr->len);
 	ip_type = decode_ip_packet(packet + ETHER_HDR_LEN);
 	
 	switch (ip_type)
@@ -101,18 +99,15 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	/* INSERER CREATION DE PACKET SELON LE TYPE DE SCAN */
 
 	/* INSERER ENVOI DE PACKET ICI */
-	send_packet(data, type, port);
-
-
-
+	send_packet(device, data, type, port);
+	
 
 	data->current_type = type;
 	data->current_port = port;
 
-
 	pthread_mutex_lock(&(g_scan->mutex));
-	/* option 1: set non-blocking (fast) */
 	
+	/* option 1: set non-blocking (fast) */
 	pcap_setnonblock(handle, 1, errbuf);
 
 	pthread_mutex_unlock(&(g_scan->mutex));
@@ -120,8 +115,6 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	struct timeval t1, t2;
     double elapsedTime = 0.0;
 	int dispatcher = 0;
-	
-//	pcap_breakloop(handle);
 
     gettimeofday(&t1, NULL);
 	while (elapsedTime < TIMEOUT && dispatcher == 0)

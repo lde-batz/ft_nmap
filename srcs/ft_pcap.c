@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 17:47:05 by seb               #+#    #+#             */
-/*   Updated: 2020/09/04 19:12:15 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:00:30 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port)
 //	dprintf(STDERR_FILENO, "src port %u or dst port %u", port, port);
 
 	sprintf(filter, "src port %u", port);
+	
 	//	sprintf(filter, "src host %s and src port %d and dst host %s", );
 
 	/* Compilation du filtre */

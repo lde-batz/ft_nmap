@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 13:47:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/04 19:10:22 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/04 19:21:20 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,6 @@
 
 uint8_t     syn_handler(t_thread_data *thread_data, uint8_t tcp_flags, int8_t icmp_code)
 {
-	
-	if (tcp_flags & TH_SYN)
-		printf("SYN");
-	if (tcp_flags & TH_ACK)
-		printf("+ACK");
-	if (tcp_flags & TH_RST)
-		printf("+RST");
-	if (tcp_flags & TH_FIN)
-		printf("+FIN");
-	printf("\n");
-
 	if (icmp_code != -1)
 		thread_data->report->syn_status = PORT_FILTERED;
 	else if (tcp_flags == 0)
