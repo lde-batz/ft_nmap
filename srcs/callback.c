@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/05 13:02:39 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:30:19 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,46 +76,61 @@ void	decode_response(uint8_t *data, const struct pcap_pkthdr *hdr, const uint8_t
 	pthread_mutex_unlock(&(g_scan->mutex));
 }
 
+/* Add error handling */
+void	get_device_ip(t_thread_data *data, char *device)
+{
+	struct ifaddrs	    *ifap;
+	struct ifaddrs		*p;
+	struct sockaddr_in	*sa;
+		
+	if (getifaddrs(&ifap) == -1)
+		return ;
+	p = ifap;
+	while (p)
+	{
+		if (p->ifa_addr->sa_family == AF_INET && strcmp(p->ifa_name, device) == 0)
+		{
+			sa = (struct sockaddr_in *)p->ifa_addr;
+			data->src_ipv4 = ft_strnew(32, 0);
+			ft_strcpy(data->src_ipv4, inet_ntoa(sa->sin_addr));
+			break;
+		}
+		p = p->ifa_next;
+	}
+}
+
 int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 {
-	//Libpcap
 	char        *device;
 	bpf_u_int32 mask;
 	bpf_u_int32 net;
 	pcap_t  	*handle;
 	char    	errbuf[PCAP_ERRBUF_SIZE];
+	struct 		timeval t1, t2;
+    double 		elapsedTime = 0.0;
+	int 		dispatcher = 0;
+
 
 	/* Récupération du device, et des paremètres résaux */
 	device = get_pcap_device(&net, &mask, errbuf);
 
+	/* Obtention de l'ip du device */
+	get_device_ip(data, device);
+	
 	/* Ouverture du device et optention du handle */
 	handle = open_pcap_device(device, errbuf);
 	
-	apply_pcap_filter(handle, net, port);
-	
+	/* Application des filtres de capture */
+	apply_pcap_filter(data, handle, net, port);
 
-	/* CREER SOCKET & ETC... */
-	
-	/* INSERER CREATION DE PACKET SELON LE TYPE DE SCAN */
-
-	/* INSERER ENVOI DE PACKET ICI */
-	send_packet(device, data, type, port);
-	
-
-	data->current_type = type;
-	data->current_port = port;
-
-	pthread_mutex_lock(&(g_scan->mutex));
+	/* Envois de packets */
+	send_packet(data, type, port);
 	
 	/* option 1: set non-blocking (fast) */
 	pcap_setnonblock(handle, 1, errbuf);
 
-	pthread_mutex_unlock(&(g_scan->mutex));
-
-	struct timeval t1, t2;
-    double elapsedTime = 0.0;
-	int dispatcher = 0;
-
+	data->current_type = type;
+	data->current_port = port;
     gettimeofday(&t1, NULL);
 	while (elapsedTime < TIMEOUT && dispatcher == 0)
 	{
@@ -184,9 +199,20 @@ void    *scan_callback(void *callback_data)
 		tdata->report = create_scan_report(tdata->port_list[i]);
 		
 		for (uint8_t btshift = 1; btshift < 64; btshift = btshift << 1)
-		{
 			if (tdata->type & btshift)
-			{
+				portscan(tdata, btshift, tdata->port_list[i]);
+		
+		push_report(tdata);
+	}
+	
+	dprintf(2, "\n");
+
+	g_scan->threads_running--;
+	
+	pthread_mutex_unlock(&(g_scan->mutex));
+	return (NULL);
+}
+
 				/* Gros debug pour afficher le thread, type de scan et les port associé */
 				/*
 				pthread_mutex_lock(&(g_scan->mutex));
@@ -201,20 +227,3 @@ void    *scan_callback(void *callback_data)
 				pthread_mutex_unlock(&(g_scan->mutex));
 				*/
 				/* Fin du gros debug */
-			
-				portscan(tdata, btshift, tdata->port_list[i]);
-			}
-		}
-		
-		push_report(tdata);
-	}
-	
-	dprintf(2, "\n");
-	
-	pthread_mutex_lock(&(g_scan->mutex));
-
-	g_scan->threads_running--;
-	
-	pthread_mutex_unlock(&(g_scan->mutex));
-	return (NULL);
-}

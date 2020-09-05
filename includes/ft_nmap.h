@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 12:59:38 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:23:34 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 # define SCAN_UDP	0x20 
 
 # define MAX_PORTS	1024
-# define TIMEOUT	500
+# define TIMEOUT	1000
 # define RETRIES	2
 
 typedef struct	s_num_ports
@@ -100,6 +100,7 @@ typedef struct	s_thread_data
 	pthread_t			identifier;
 	char				*hostname;
 	char				*ipv4;
+	char				*src_ipv4;
 	struct sockaddr_in	*sin;
 	uint16_t			current_port;
 	uint8_t				current_type;
@@ -151,13 +152,13 @@ void			*scan_callback(void *data);
 
 char			*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024]);
 pcap_t			*open_pcap_device(char *device, char errbuf[1024]);
-void			apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port);
+void			apply_pcap_filter(t_thread_data *dt, pcap_t *handle, bpf_u_int32 net, uint16_t port);
 
 uint16_t		get_portnb(uint16_t *ports);
 uint16_t		ft_checksum();
 
-int				send_packet(char *device, t_thread_data *data, uint8_t type, uint16_t port);
-void			send_tcp_packet(char *device, t_thread_data *data, uint8_t type, uint16_t port);
+int				send_packet(t_thread_data *data, uint8_t type, uint16_t port);
+void			send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port);
 void			send_udp_packet(t_thread_data *data, uint16_t port);
 int				checksum(unsigned short	*buf, int len);
 

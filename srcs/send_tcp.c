@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 13:02:19 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:30:46 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,10 @@ int		tcphdr_checksum(struct tcphdr *tcph, struct sockaddr_in *saddr, struct sock
 	return (checksum((unsigned short *)&psh, sizeof(t_pseudo_header)));
 }
 
-void	send_tcp_packet(char *device, t_thread_data *data, uint8_t type, uint16_t port)
+void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 {
 	int					sockfd;
 	char				datagram[512];
-	char				ip_source[64]; // 64 a modifier ?
 	struct tcphdr		*tcph;
 	struct sockaddr_in	saddr;
 	struct sockaddr_in	daddr;
@@ -101,28 +100,8 @@ void	send_tcp_packet(char *device, t_thread_data *data, uint8_t type, uint16_t p
 /*		Initialisation du socket TCP		*/
 	sockfd = init_socket();
 
-
-/* Obtention de l'ip du device */
-	struct ifaddrs	    *ifap;
-	struct ifaddrs		*p;
-	struct sockaddr_in	*sa;
-		
-	if (getifaddrs(&ifap) == -1)
-		return ;
-	p = ifap;
-	while (p)
-	{
-		if (p->ifa_addr->sa_family == AF_INET && strcmp(p->ifa_name, device) == 0)
-		{
-			sa = (struct sockaddr_in *)p->ifa_addr;
-			ft_strcpy(ip_source, inet_ntoa(sa->sin_addr));
-			break;
-		}
-		p = p->ifa_next;
-	}
-
 /*		Initialisation adresse source		*/
-	if (inet_pton(AF_INET, ip_source, &saddr.sin_addr) != 1)
+	if (inet_pton(AF_INET, data->src_ipv4, &saddr.sin_addr) != 1)
 	{
 		perror("Error inet_pton:");
 		exit(EXIT_FAILURE);

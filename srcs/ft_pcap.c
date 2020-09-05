@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 17:47:05 by seb               #+#    #+#             */
-/*   Updated: 2020/09/05 13:00:30 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:30:36 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,14 @@ pcap_t	*open_pcap_device(char *device, char errbuf[1024])
 	return (handle);
 }
 
-void	apply_pcap_filter(pcap_t *handle, bpf_u_int32 net, uint16_t port)
+void	apply_pcap_filter(t_thread_data *data, pcap_t *handle, bpf_u_int32 net, uint16_t port)
 {
 	char		filter[512];
 	struct		bpf_program	bpf;
 
 	pthread_mutex_lock(&(g_scan->mutex));
 
-//	dprintf(STDERR_FILENO, "src port %u or dst port %u", port, port);
-
-	sprintf(filter, "src port %u", port);
-	
-	//	sprintf(filter, "src host %s and src port %d and dst host %s", );
+	sprintf(filter, "src host %s and src port %u and dst host %s", data->ipv4, port, data->src_ipv4);
 
 	/* Compilation du filtre */
 	if (pcap_compile(handle, &bpf, filter, 0, net) == -1)

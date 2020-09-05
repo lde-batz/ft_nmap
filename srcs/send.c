@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 12:59:39 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/05 13:13:50 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ int		checksum(unsigned short	*buf, int len)
 	return (res);
 }
 
-int		send_packet(char *device, t_thread_data *data, uint8_t type, uint16_t port)
+int		send_packet(t_thread_data *data, uint8_t type, uint16_t port)
 {
 	if (type & SCAN_UDP)
 		send_udp_packet(data, port);
 	else
-		send_tcp_packet(device, data, type, port);
+		send_tcp_packet(data, type, port);
 	return (1);
 }
