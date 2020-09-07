@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 12:38:40 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 16:54:06 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ void	show_report(t_scan *scan)
 	printf("\n");
 	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
 	{
-		printf("- Port %d\t\tSYN(%s) ACK(%s) XMAS(%s)\n", rep->portnumber,
-		status_to_str(rep->syn_status), status_to_str(rep->ack_status), status_to_str(rep->xmas_status));
+		printf("- Port %d\t\tSYN(%s) ACK(%s) XMAS(%s) UDP(%s)\n", rep->portnumber,
+		status_to_str(rep->syn_status), status_to_str(rep->ack_status),
+		status_to_str(rep->xmas_status), status_to_str(rep->udp_status));
 	}
 }
 
@@ -68,7 +69,6 @@ void    ft_nmap(t_nmap *nmap)
 		g_scan = scan;
 		if (nmap->threads == 0)		/* Aucun thread */
 		{
-			/* Creation de la thread_data pour compatibilité avec le callback */
 			pseudo_thread_data = allocate_thread_data(scan, 0, 0);
 			scan_callback((void*)pseudo_thread_data);
 		}

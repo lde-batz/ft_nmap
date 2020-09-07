@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 13:47:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 12:38:35 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 16:53:50 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,18 @@ uint8_t     xmas_handler(t_thread_data *thread_data, uint8_t tcp_flags, int8_t i
 	return (0);
 }
 
-uint8_t     udp_handler()
+uint8_t     udp_handler(t_thread_data *thread_data, uint8_t udp, int8_t icmp_code)
 {
-	printf("UDP HANDLER\n");
+	if (icmp_code != -1)
+	{
+		if (icmp_code == 3)
+			thread_data->report->udp_status = PORT_CLOSED;
+		else
+			thread_data->report->udp_status = PORT_FILTERED;
+	}
+	else if (udp == 0 && icmp_code == -1)
+		thread_data->report->udp_status = PORT_OPEN | PORT_FILTERED;
+	else
+		thread_data->report->udp_status = PORT_OPEN;
 	return (0);
 }

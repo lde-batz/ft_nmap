@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 12:44:42 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 16:56:12 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ t_scan	*g_scan;
 
 void	no_response(t_thread_data	*thread_data)
 {
-	uint8_t		(*handlers[5])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
-					&ack_handler, &null_handler, &fin_handler, &xmas_handler};
+	uint8_t		(*handlers[6])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
+					&ack_handler, &null_handler, &fin_handler, &xmas_handler, &udp_handler};
 
-	for (uint8_t shift = 1, index = 0; shift < 64 && index < 5; shift = shift << 1, index++)
+	for (uint8_t shift = 1, index = 0; shift < 64 && index < 6; shift = shift << 1, index++)
 		if (thread_data->current_type == shift)
 			handlers[index](thread_data, 0, -1);
 }
@@ -34,7 +34,6 @@ void	decode_response(uint8_t *data, const struct pcap_pkthdr *hdr, const uint8_t
 	(void)hdr;
 	pthread_mutex_lock(&(g_scan->mutex));
 	ip_type = decode_ip_packet(packet + ETHER_HDR_LEN);
-	
 	switch (ip_type)
 	{
 		case TCP_CODE :
@@ -42,7 +41,7 @@ void	decode_response(uint8_t *data, const struct pcap_pkthdr *hdr, const uint8_t
 			break ;
 
 		case UDP_CODE :
-			decode_udp_packet(packet + ETHER_HDR_LEN + sizeof (struct ip));
+			decode_udp_packet(thread_data, packet + ETHER_HDR_LEN + sizeof (struct ip));
 			break ;
 
 		case ICMP_CODE:
@@ -122,7 +121,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	data->current_port = port;
 	data->mismatch = 1;
     gettimeofday(&t1, NULL);
-	while (elapsedTime < TIMEOUT && dispatcher == 0)// && data->mismatch == 1)
+	while (elapsedTime < TIMEOUT && dispatcher == 0)
 	{
 		dispatcher = pcap_dispatch(handle, 1, decode_response, (uint8_t*)data);
 		if (data->mismatch == 1)
