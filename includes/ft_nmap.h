@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 13:23:34 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 10:58:09 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@
 # define SCAN_ACK	0x02
 # define SCAN_FIN	0x08
 # define SCAN_XMAS	0x10
-# define SCAN_UDP	0x20 
+# define SCAN_UDP	0x20
+# define SCAN_CON	0x40
+# define SCAN_MAI	0x80
 
 # define MAX_PORTS	1024
 # define TIMEOUT	1000

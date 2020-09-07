@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 15:51:30 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/07 10:58:45 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,10 @@ void	parsing_scan(t_nmap *nmap, char *scan)
 			nmap->type = nmap->type | SCAN_XMAS;
 		else if (ft_strcmp(scan_split[i], "UDP") == 0)
 			nmap->type = nmap->type | SCAN_UDP;
+		else if (ft_strcmp(scan_split[i], "CON") == 0)
+			nmap->type = nmap->type | SCAN_CON;
+		else if (ft_strcmp(scan_split[i], "MAI") == 0)
+			nmap->type = nmap->type | SCAN_MAI;
 		else
 		{
 			free_double_char(scan_split);

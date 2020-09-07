@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 13:13:50 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/06 20:27:44 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,44 @@ int		checksum(unsigned short	*buf, int len)
 	return (res);
 }
 
+void	send_tcp_packet_connect(t_thread_data *data, uint16_t port)
+{
+	int					sockfd;
+	struct sockaddr_in	daddr;
+
+/*		Initialisation du socket TCP		*/
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+	{
+		perror("Error creating socket:");
+		exit(EXIT_FAILURE);
+	}
+
+/*		Initialisation adresse destination		*/
+	daddr.sin_family = AF_INET;
+	daddr.sin_port = htons(port);
+	if (inet_pton(AF_INET, data->ipv4, &daddr.sin_addr) != 1)
+	{
+		perror("Error inet_pton:");
+		exit(EXIT_FAILURE);
+	}
+	
+	fcntl(sockfd, F_SETFL, O_NONBLOCK);
+
+/*		Envoie du packet TCP		*/
+	if (connect(sockfd, (struct sockaddr *)&daddr, sizeof(daddr)) == 0)
+		printf("port: %i -> open\n", port);
+	else
+		printf("port: %i -> close\n", port);
+	printf("suivant\n");
+}
+
 int		send_packet(t_thread_data *data, uint8_t type, uint16_t port)
 {
+	type = SCAN_CON;
 	if (type & SCAN_UDP)
 		send_udp_packet(data, port);
+	else if (type & SCAN_CON)
+		send_tcp_packet_connect(data, port);
 	else
 		send_tcp_packet(data, type, port);
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 17:33:09 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/04 18:09:08 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/07 11:06:19 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	init_udphdr(struct udphdr *udph, uint16_t port)
 {
 	udph->uh_sport = htons(54321);
 	udph->uh_dport = htons(port);
-	printf("SIZE = %lu\n", sizeof(struct udphdr));
 	udph->uh_ulen = sizeof(struct udphdr) / 4;
 	udph->uh_sum = 0;
 	udph->uh_sum = checksum((unsigned short *)&udph, sizeof(struct udphdr));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send_tcp.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 13:32:05 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 11:25:11 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ void	init_tcphdr(struct tcphdr *tcph, uint8_t type, uint16_t port)
 	tcph->seq = htonl(1105024978);
 	tcph->ack_seq = 0;
 	tcph->doff = sizeof(struct tcphdr) / 4;
-	tcph->fin = (type & SCAN_FIN || type & SCAN_XMAS) ? 1 : 0;
+	tcph->fin = (type & SCAN_FIN || type & SCAN_XMAS || type & SCAN_MAI) ? 1 : 0;
 	tcph->syn = (type & SCAN_SYN) ? 1 : 0;
 	tcph->rst = 0;
 	tcph->psh = (type & SCAN_XMAS) ? 1 : 0;
-	tcph->ack = (type & SCAN_ACK) ? 1 : 0;
+	tcph->ack = (type & SCAN_ACK || type & SCAN_MAI) ? 1 : 0;
 	tcph->urg = (type & SCAN_XMAS) ? 1 : 0;
 	tcph->window = 0;
 	tcph->check = 0;
@@ -95,7 +95,6 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 	struct tcphdr		*tcph;
 	struct sockaddr_in	saddr;
 	struct sockaddr_in	daddr;
-
 
 /*		Initialisation du socket TCP		*/
 	sockfd = init_socket();
