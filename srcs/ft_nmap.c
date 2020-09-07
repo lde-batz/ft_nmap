@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/05 13:27:37 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 11:24:20 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void    ft_nmap(t_nmap *nmap)
 			dispatch_threads(nmap, scan);
 			
 		dprintf(STDERR_FILENO, "Scan for %s finished\n", scan->ip);
+		
 		show_report(scan);
 	}
 }

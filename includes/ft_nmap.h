@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 13:23:34 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 11:59:57 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,11 @@ typedef struct	s_thread_data
 	uint16_t			*port_list;
 	t_scan_report		*report;
 	uint8_t				type;
+	
+	uint32_t	seq;
+	uint32_t	ack;
+	uint8_t		mismatch;
+	
 	struct s_thread_data *next;
 }				t_thread_data;
 

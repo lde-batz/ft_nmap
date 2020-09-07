@@ -6,33 +6,13 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/05 13:30:19 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 12:14:29 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nmap.h"
 
 t_scan	*g_scan;
-
-  
-/* Utilitaire de debug 
-
-static char *hex_to_type(uint8_t hex)
-{
-	if (hex & SCAN_SYN)
-		return ("SYN");
-	if (hex & SCAN_NULL)
-		return ("NULL");
-	if (hex & SCAN_ACK)
-		return ("ACK");
-	if (hex & SCAN_FIN)
-		return ("FIN");
-	if (hex & SCAN_XMAS)
-		return ("XMAS");
-	if (hex & SCAN_UDP)
-		return ("UDP");
-	return ("Unknown.");
-}*/
 
 void	no_response(t_thread_data	*thread_data)
 {
@@ -99,6 +79,11 @@ void	get_device_ip(t_thread_data *data, char *device)
 	}
 }
 
+static uint32_t ft_abs(int32_t abs)
+{
+	return (abs < 0) ? -abs : abs;
+}
+
 int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 {
 	char        *device;
@@ -123,6 +108,10 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	/* Application des filtres de capture */
 	apply_pcap_filter(data, handle, net, port);
 
+	/* Seq/Ack */
+	data->seq = htonl(ft_abs(data->identifier + (port * 2) + type));
+	//dprintf(2, "Seq is %u\n", data->seq);
+	
 	/* Envois de packets */
 	send_packet(data, type, port);
 	
@@ -131,10 +120,13 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 
 	data->current_type = type;
 	data->current_port = port;
+	data->mismatch = 1;
     gettimeofday(&t1, NULL);
-	while (elapsedTime < TIMEOUT && dispatcher == 0)
+	while (elapsedTime < TIMEOUT && dispatcher == 0)// && data->mismatch == 1)
 	{
 		dispatcher = pcap_dispatch(handle, 1, decode_response, (uint8_t*)data);
+		if (data->mismatch == 1)
+			dispatcher = 0;
 		gettimeofday(&t2, NULL);
 		elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;
    		elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;
@@ -199,9 +191,11 @@ void    *scan_callback(void *callback_data)
 		tdata->report = create_scan_report(tdata->port_list[i]);
 		
 		for (uint8_t btshift = 1; btshift < 64; btshift = btshift << 1)
-			if (tdata->type & btshift)
+		{
+			if (tdata->type & btshift) {
 				portscan(tdata, btshift, tdata->port_list[i]);
-		
+			}
+		}
 		push_report(tdata);
 	}
 	
@@ -212,18 +206,3 @@ void    *scan_callback(void *callback_data)
 	pthread_mutex_unlock(&(g_scan->mutex));
 	return (NULL);
 }
-
-				/* Gros debug pour afficher le thread, type de scan et les port associé */
-				/*
-				pthread_mutex_lock(&(g_scan->mutex));
-
-				dprintf(2, "Thread %lu: Doing %s scan on '%s': Ports: - ",
-					tdata->identifier, hex_to_type(btshift), tdata->ipv4);
-					
-				for (int i = 0; tdata->port_list[i] != 0; i++)
-					dprintf(2, "%d ", tdata->port_list[i]);
-				dprintf(2, "-\n");
-
-				pthread_mutex_unlock(&(g_scan->mutex));
-				*/
-				/* Fin du gros debug */

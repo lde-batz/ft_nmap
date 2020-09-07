@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/04 19:10:32 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 12:17:42 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,23 @@ uint8_t	decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_star
 	tcp_header = (const struct tcphdr*)header_start;
 	header_size = 4 * tcp_header->th_off;
 	resp_flags = tcp_header->th_flags;
-	
 
+/*	dprintf(2, "\nScan: %u\n", thread_data->current_type);
+	dprintf(2, "Sent SEQ: %u\n", ntohl(thread_data->seq) + 1);
+	dprintf(2, "Received ACK %u\n", ntohl(tcp_header->th_ack));*/
 	
-	for (uint8_t shift = 1, index = 0; shift < 64 && index < 5; shift = shift << 1, index++)
-		if (thread_data->current_type == shift)
-			handlers[index](thread_data, resp_flags, -1);
+	if (ntohl(thread_data->seq) + 1 == ntohl(tcp_header->th_ack))
+	{
+		thread_data->mismatch = 0;
+		for (uint8_t shift = 1, index = 0; shift < 64 && index < 5; shift = shift << 1, index++)
+			if (thread_data->current_type == shift)
+				handlers[index](thread_data, resp_flags, -1);
+	}
+	else
+	{
+		thread_data->mismatch = 1;
+		//dprintf(2, "Seq/Ack mismatch!\n");
+	}
 	
 	return (0);
 }

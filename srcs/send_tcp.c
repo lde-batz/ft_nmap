@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/05 13:32:05 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 11:47:58 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,12 @@ void	init_iphdr(char *datagram, struct sockaddr_in *saddr, struct sockaddr_in *d
 	iph->check = checksum((unsigned short *)datagram, sizeof(iph));
 }
 
-void	init_tcphdr(struct tcphdr *tcph, uint8_t type, uint16_t port)
+void	init_tcphdr(t_thread_data *data, struct tcphdr *tcph, uint8_t type, uint16_t port)
 {
 	tcph->source = htons(54321);
 	tcph->dest = htons(port);
-	tcph->seq = htonl(1105024978);
+//	dprintf(2, "Seq is %u\n", data->seq);
+	tcph->seq = data->seq;
 	tcph->ack_seq = 0;
 	tcph->doff = sizeof(struct tcphdr) / 4;
 	tcph->fin = (type & SCAN_FIN || type & SCAN_XMAS) ? 1 : 0;
@@ -123,7 +124,7 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 
 /*		Initialisation HEADER TCP		*/
 	tcph = (struct tcphdr *)(datagram + sizeof(struct iphdr));
-	init_tcphdr(tcph, type, port);
+	init_tcphdr(data, tcph, type, port);
 	tcph->check = tcphdr_checksum(tcph, &saddr, &daddr);
 
 

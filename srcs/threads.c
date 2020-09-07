@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 08:33:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/02 15:36:59 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 10:56:27 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,10 @@ void    dispatch_threads(t_nmap *nmap, t_scan *scan)
     /* Si nous avons plus de thread que de ports, fixer le nb. de thread au nb. de ports */
 	if (ports_per_thread == 0)
 	{
-		for (int i = 0; i < nmap->threads; i++)
+		for (int i = 0; i < get_portnb(nmap->ports); i++)
 		{
 			thread_data = allocate_thread_data(scan, 1, i);
+
 			launch_thread(scan, thread_data);
 		}
 	}
@@ -115,14 +116,17 @@ void    dispatch_threads(t_nmap *nmap, t_scan *scan)
                 offset += ports_per_thread + 1;
 				--rest_ports;
 			}
+//			dprintf(2, "Thread %s ports: ", thread_data->ipv4);
+//			for (int i = 0; thread_data->port_list[i] != 0; i++)
+//					dprintf(2, "%d ", thread_data->port_list[i]);
+//			dprintf(2, "\n");
 			launch_thread(scan, thread_data);
 		}
-		
-        /* Itération sur tout les thread, et attendre leur fin d'execution avec pthread_join() */
-		for (t_thread_data *td = scan->threads; td != NULL; td = td->next)
-		{
-			if(pthread_join(td->identifier, NULL) != 0)
-				dprintf(STDERR_FILENO, "Thread |%lu| join failed\n", td->identifier);
-		}
+	}
+	/* Itération sur tout les thread, et attendre leur fin d'execution avec pthread_join() */
+	for (t_thread_data *td = scan->threads; td != NULL; td = td->next)
+	{
+		if(pthread_join(td->identifier, NULL) != 0)
+			dprintf(STDERR_FILENO, "Thread |%lu| join failed\n", td->identifier);
 	}
 }
