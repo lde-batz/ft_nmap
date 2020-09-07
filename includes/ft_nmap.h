@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 10:58:09 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/07 12:43:42 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,11 @@ typedef struct	s_thread_data
 	uint16_t			*port_list;
 	t_scan_report		*report;
 	uint8_t				type;
+	
+	uint32_t	seq;
+	uint32_t	ack;
+	uint8_t		mismatch;
+	
 	struct s_thread_data *next;
 }				t_thread_data;
 

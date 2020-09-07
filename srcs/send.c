@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/06 20:27:44 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/07 12:32:04 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	send_tcp_packet_connect(t_thread_data *data, uint16_t port)
 
 int		send_packet(t_thread_data *data, uint8_t type, uint16_t port)
 {
-	type = SCAN_CON;
 	if (type & SCAN_UDP)
 		send_udp_packet(data, port);
 	else if (type & SCAN_CON)
