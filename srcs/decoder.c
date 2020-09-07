@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 16:56:08 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 18:25:07 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,12 @@ uint32_t	decode_icmp_packet(t_thread_data *thread_data, const uint8_t *header_st
 	
 	thread_data->mismatch = 0;
 	icmp_header = (struct icmphdr *) header_start;
+
+/*	struct iphdr *iphdr = (struct iphdr*)(icmp_header + sizeof(struct icmphdr));
+	struct udphdr *udph = (struct udphdr *)iphdr + sizeof(struct iphdr);
+	dprintf(2, "(Port %d %d thread) Received icmp %d bytes message for port %d\n", thread_data->current_port, thread_data->current_type,
+			udph->len ,udph->uh_dport);
+*/	
 	if (icmp_header->type == 3) /* Unreachable */
 	{
 		uint8_t		(*handlers[6])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,

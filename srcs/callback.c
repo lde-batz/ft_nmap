@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 16:56:12 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 18:26:44 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
     double 		elapsedTime = 0.0;
 	int 		dispatcher = 0;
 
+	data->current_type = type;
+	data->current_port = port;
 
 	/* Récupération du device, et des paremètres résaux */
 	device = get_pcap_device(&net, &mask, errbuf);
@@ -117,8 +119,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	/* option 1: set non-blocking (fast) */
 	pcap_setnonblock(handle, 1, errbuf);
 
-	data->current_type = type;
-	data->current_port = port;
+	
 	data->mismatch = 1;
     gettimeofday(&t1, NULL);
 	while (elapsedTime < TIMEOUT && dispatcher == 0)
