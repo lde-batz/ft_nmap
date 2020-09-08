@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 12:38:40 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 18:19:57 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,35 +25,13 @@ static void    print_config(t_nmap *nmap)
 		(nmap->type & SCAN_XMAS) ?  "XMAS " : "",
 		(nmap->type & SCAN_UDP) ?  "UDP " : "");
 	dprintf(STDERR_FILENO, "Amount of threads: %d\n", nmap->threads);
-	dprintf(STDERR_FILENO, "Go for scan.\n");
 }
 
-char *status_to_str(uint8_t status)
+void	print_scanning(void)
 {
-	if (status == PORT_CLOSED)
-		return ("CLOSED");
-	else if (status == PORT_OPEN)
-		return ("OPEN");
-	else if (status == PORT_FILTERED)
-		return ("FILTERED");
-	else if (status == PORT_UNFILTERED)
-		return ("UNFILTERED");
-	else if (status & PORT_OPEN && status & PORT_FILTERED)
-		return ("OPEN | FILTERED");
-	else
-	{
-		return ("UNKNOWN");
-	}
-}
-
-void	show_report(t_scan *scan)
-{
-	printf("\n");
-	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
-	{
-		printf("- Port %d\t\tSYN(%s) ACK(%s) XMAS(%s)\n", rep->portnumber,
-		status_to_str(rep->syn_status), status_to_str(rep->ack_status), status_to_str(rep->xmas_status));
-	}
+	g_scan->scanning = 1;
+	printf("Scanning...\n");
+	alarm(1);
 }
 
 void    ft_nmap(t_nmap *nmap)
@@ -66,6 +44,7 @@ void    ft_nmap(t_nmap *nmap)
 	for (scan = nmap->scan; scan != NULL; scan = scan->next)
 	{
 		g_scan = scan;
+		print_scanning();
 		if (nmap->threads == 0)		/* Aucun thread */
 		{
 			/* Creation de la thread_data pour compatibilité avec le callback */
@@ -74,7 +53,7 @@ void    ft_nmap(t_nmap *nmap)
 		}
 		else						/* Thread >= 1 */
 			dispatch_threads(nmap, scan);
-			
+		g_scan->scanning = 0;
 		dprintf(STDERR_FILENO, "Scan for %s finished\n", scan->ip);
 		
 		show_report(scan);

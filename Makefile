@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: seb <seb@student.42.fr>                    +#+  +:+       +#+         #
+#    By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/04 18:30:39 by seb              ###   ########.fr        #
+#    Updated: 2020/09/08 10:05:26 by lde-batz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,9 @@ SRC += ft_pcap.c
 SRC += socket.c
 SRC += decoder.c
 SRC += handler.c
+SRC += signal.c
+SRC += report_print.c
+SRC += report_conclusion.c
 
 
 SRC_DIR = srcs/

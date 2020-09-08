@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 12:43:42 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/08 10:07:23 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,10 @@ typedef struct s_scan_report
 	uint8_t		fin_status;
 	uint8_t		xmas_status;
 	uint8_t		udp_status;
+	uint8_t		con_status;
+	uint8_t		mai_status;
 	char		service_name[64];
+	uint8_t		conclusion;
 	struct s_scan_report *next;
 }				t_scan_report;
 
@@ -127,6 +130,8 @@ typedef struct s_scan
 	int					threads_running;
 	t_thread_data		*threads;
 	pthread_mutex_t		mutex;
+
+	char				scanning;
 	struct s_scan		*next;
 }				t_scan;
 
@@ -162,7 +167,6 @@ pcap_t			*open_pcap_device(char *device, char errbuf[1024]);
 void			apply_pcap_filter(t_thread_data *dt, pcap_t *handle, bpf_u_int32 net, uint16_t port);
 
 uint16_t		get_portnb(uint16_t *ports);
-uint16_t		ft_checksum();
 
 int				send_packet(t_thread_data *data, uint8_t type, uint16_t port);
 void			send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port);
@@ -173,6 +177,11 @@ uint32_t		decode_ip_packet(const uint8_t *header_start);
 uint8_t			decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_start);
 uint32_t		decode_udp_packet(const uint8_t *header_start);
 uint32_t		decode_icmp_packet(t_thread_data *thread_data, const uint8_t *header_start);
+
+void			show_report(t_scan *scan);
+void			set_conclusion_report(t_scan *scan);
+
+void			sig_alarm(int sig, siginfo_t *siginfo, void *context);
 
 int				portscan(t_thread_data *data, uint8_t type, uint16_t port);
 
