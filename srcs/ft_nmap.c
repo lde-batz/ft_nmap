@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 18:19:57 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/08 11:43:00 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void    ft_nmap(t_nmap *nmap)
 		print_scanning();
 		if (nmap->threads == 0)		/* Aucun thread */
 		{
-			/* Creation de la thread_data pour compatibilité avec le callback */
 			pseudo_thread_data = allocate_thread_data(scan, 0, 0);
 			scan_callback((void*)pseudo_thread_data);
 		}

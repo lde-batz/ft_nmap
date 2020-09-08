@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 12:28:59 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/07 14:01:17 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int		init_socket(void)
 	return (sockfd);
 }
 
-void	init_iphdr(char *datagram, struct sockaddr_in *saddr, struct sockaddr_in *daddr)
+static void	init_iphdr(char *datagram, struct sockaddr_in *saddr, struct sockaddr_in *daddr)
 {
 	struct iphdr	*iph;
 
