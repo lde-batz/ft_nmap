@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 13:47:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 12:45:07 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 22:03:14 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ uint8_t     xmas_handler(t_thread_data *thread_data, uint8_t tcp_flags, int8_t i
 
 uint8_t     udp_handler(t_thread_data *thread_data, uint8_t udp, int8_t icmp_code)
 {
+	if (thread_data->report->udp_mismatch == 1)
+		return (0);
 	if (icmp_code != -1)
 	{
 		if (icmp_code == 3)

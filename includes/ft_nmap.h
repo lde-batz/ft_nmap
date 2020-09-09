@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 18:57:22 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 20:09:23 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 # define SCAN_MAI			0x80
 
 # define MAX_PORTS			1024
-# define TIMEOUT			300
+# define TIMEOUT			1000
 # define RETRIES			2
 
 # define PORT_CLOSED		0x1
@@ -93,6 +93,7 @@ typedef struct 				s_scan_report
 	uint8_t					mai_status;
 	char					service_name[64];
 	uint8_t					conclusion;
+	uint8_t					udp_mismatch;
 	struct s_scan_report	 *next;
 }							t_scan_report;
 
@@ -125,6 +126,7 @@ typedef struct 				s_scan
 	t_thread_data			*threads;
 	pthread_mutex_t			mutex;
 	uint16_t				*ports;
+	uint8_t					udp_auth;
 }							t_scan;
 
 extern t_scan				*g_scan;

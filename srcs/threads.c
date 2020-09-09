@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 08:33:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 18:35:51 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 22:03:57 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,6 @@ void    dispatch_threads(t_nmap *nmap, t_scan *scan)
                 offset += ports_per_thread + 1;
 				--rest_ports;
 			}
-//			dprintf(2, "Thread %s ports: ", thread_data->ipv4);
-//			for (int i = 0; thread_data->port_list[i] != 0; i++)
-//					dprintf(2, "%d ", thread_data->port_list[i]);
-//			dprintf(2, "\n");
 			launch_thread(scan, thread_data);
 		}
 	}

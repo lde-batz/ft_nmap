@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 17:47:05 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 18:47:45 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 22:04:32 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ void	apply_pcap_filter(t_thread_data *data, pcap_t *handle, bpf_u_int32 net, uin
 	pthread_mutex_lock(&(g_scan->mutex));
 
 	if (data->current_type & SCAN_UDP)
-		sprintf(filter, "(udp and src host %s and src port %u and dst host %s) || icmp", data->ipv4, port, data->src_ipv4);
+		sprintf(filter, "(udp and src host %s and src port %u and dst host %s) || (icmp and src host %s and dst host %s)", data->ipv4, port, data->src_ipv4, data->ipv4, data->src_ipv4);
 	else
-		sprintf(filter, "(tcp and src host %s and src port %u and dst host %s) || icmp", data->ipv4, port, data->src_ipv4);
+		sprintf(filter, "(tcp and src host %s and src port %u and dst host %s) || (icmp and src host %s and dst host %s)", data->ipv4, port, data->src_ipv4, data->ipv4, data->src_ipv4);
 
 	/* Compilation du filtre */
 	if (pcap_compile(handle, &bpf, filter, 0, net) == -1)

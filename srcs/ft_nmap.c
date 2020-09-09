@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 18:45:28 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 19:34:56 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	print_scanning(void)
 {
 	g_scan->scanning = 1;
 	dprintf(STDOUT_FILENO, "Scanning...\n");
-	alarm(1);
+	alarm(2);
 }
 
 void    ft_nmap(t_nmap *nmap)

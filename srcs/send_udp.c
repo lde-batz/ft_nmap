@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 17:33:09 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 16:17:08 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 22:03:46 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,10 +134,19 @@ void	send_udp_packet(t_thread_data *tdata, uint16_t port)
 	/* Checksum with UDP pseudo-header */
 	pseudo_csum(udph, &source, &sin);
 	
+	pthread_mutex_lock(&(g_scan->mutex));
+	/* Mutex timer lock. GG */
+	while (g_scan->udp_auth != 1)
+	{ }
+	g_scan->udp_auth = 0;
+
 	if (sendto (sockfd, datagram, iph->tot_len , 0, (struct sockaddr *) &sin, sizeof (sin)) < 0)
 	{
 		perror("sendto failed");
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&(g_scan->mutex));
+	
 	close(sockfd);
 }

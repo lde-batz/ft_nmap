@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 18:56:37 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 22:04:23 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ uint8_t	decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_star
 	tcp_header = (const struct tcphdr*)header_start;
 	header_size = 4 * tcp_header->th_off;
 	resp_flags = tcp_header->th_flags;
-	if (resp_flags & TH_RST || ntohl(thread_data->seq) + 1 == ntohl(tcp_header->th_ack))
+
+	if (ntohl(thread_data->seq) + 1 == ntohl(tcp_header->th_ack))
 	{
 		thread_data->mismatch = 0;
 		for (uint8_t shift = 1, index = 0; shift < 64 && index < 5; shift = shift << 1, index++)
@@ -67,14 +68,32 @@ uint32_t	decode_icmp_packet(t_thread_data *thread_data, const uint8_t *buffer)
 		{
 			case UDP_CODE:
 				udphdr = (struct udphdr *)(buffer + header_size + sizeof(struct iphdr));
+				
 				if (thread_data->current_type == SCAN_UDP
 					&& thread_data->current_port == ntohs(udphdr->dest))
 				{
+				//	dprintf(2, "port %d got %d port RESPONSE\n", thread_data->current_port, ntohs(udphdr->dest));
 					thread_data->mismatch = 0;
 					udp_handler(thread_data, 42, icmph->code);
 				}
 				else
+				{
 					thread_data->mismatch = 1;
+					for (t_scan_report *sr = g_scan->report; sr != NULL; sr = sr->next)
+					{
+						if (sr->portnumber == ntohs(udphdr->dest))
+						{
+							sr->udp_mismatch = 1;
+							if (icmph->code == 3)
+								sr->udp_status = PORT_CLOSED;
+							else
+								sr->udp_status = PORT_FILTERED;
+							break ;
+						}
+					}
+
+					//dprintf(2, "port %d got %d port MISMATCH\n", thread_data->current_port, ntohs(udphdr->dest));
+				}
 				break ;
 
 			case TCP_CODE:
