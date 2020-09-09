@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 20:40:30 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 20:59:26 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/socket.h>
+# include <sys/time.h>
 # include <signal.h>
 # include <netdb.h>
 # include <arpa/inet.h>
@@ -139,6 +140,7 @@ typedef struct				s_nmap
 	int						threads;
 	char					type;
 	uint16_t				*ports;
+	uint16_t				ports_len;
 	t_scan					*scan;
 }							t_nmap;
 
