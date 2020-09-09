@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 20:09:23 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 22:14:23 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/socket.h>
+# include <sys/time.h>
 # include <signal.h>
 # include <netdb.h>
 # include <arpa/inet.h>
@@ -37,6 +38,7 @@
 #define TCP_CODE			6
 #define UDP_CODE			17
 
+# define SCAN_DEF			0x3F
 # define SCAN_SYN			0x01
 # define SCAN_NULL			0x04 
 # define SCAN_ACK			0x02
@@ -119,10 +121,11 @@ typedef struct 				s_scan
 {
 	char					*name;	
 	char					*ip;
-	char					scanning;
+	u_int8_t				scanning;
 	struct s_scan			*next;
 	uint8_t					type;
 	t_scan_report			*report;
+	t_scan_report			*report_open;
 	t_thread_data			*threads;
 	pthread_mutex_t			mutex;
 	uint16_t				*ports;
@@ -139,6 +142,7 @@ typedef struct				s_nmap
 	int						threads;
 	char					type;
 	uint16_t				*ports;
+	uint16_t				ports_len;
 	t_scan					*scan;
 }							t_nmap;
 
