@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 18:45:28 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 20:41:52 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void    ft_nmap(t_nmap *nmap)
 			dispatch_threads(nmap, scan);
 
 		g_scan->scanning = 0;
-		dprintf(STDOUT_FILENO, "Scan for %s finished\n", scan->ip);
+		dprintf(STDOUT_FILENO, "\nScan for %s finished\n", scan->ip);
 		
 		show_report(scan);
 		free_reports(scan);

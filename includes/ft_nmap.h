@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 20:37:43 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 20:40:30 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ typedef struct 				s_scan
 	struct s_scan			*next;
 	uint8_t					type;
 	t_scan_report			*report;
+	t_scan_report			*report_open;
 	t_thread_data			*threads;
 	pthread_mutex_t			mutex;
 	uint16_t				*ports;
