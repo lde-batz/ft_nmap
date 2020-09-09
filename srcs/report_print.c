@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   report_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 16:39:04 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/08 11:33:57 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 12:25:25 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ void	show_report(t_scan *scan)
 	printf("-----------------------------------------------------------------------------------------------\n");
 	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
 	{
-		printf("- Port %d\t\tSYN(%s) ACK(%s) XMAS(%s)   CONCLUSION(%s)\n", rep->portnumber,
-		status_to_str(rep->syn_status), status_to_str(rep->ack_status), status_to_str(rep->xmas_status),
+		printf("- Port %d\t\tSYN(%s) ACK(%s) UDP(%s)   CONCLUSION(%s)\n", rep->portnumber,
+		status_to_str(rep->syn_status), status_to_str(rep->ack_status), status_to_str(rep->udp_status),
 		status_to_str(rep->conclusion));
 	}
 }

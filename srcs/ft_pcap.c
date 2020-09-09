@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 17:47:05 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 18:26:41 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 18:47:45 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ char	*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024])
 		pthread_mutex_unlock(&(g_scan->mutex));
 		pthread_exit(NULL);
 	}
-	device = interfaces->name;
-	
+	device = ft_strdup(interfaces->name);
+	pcap_freealldevs(interfaces);
 	/* Détéction et stockage du réseau & netmask */
 	if (pcap_lookupnet(device, net, mask, errbuf) != 0)
 	{

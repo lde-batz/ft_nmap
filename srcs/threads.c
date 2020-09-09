@@ -6,11 +6,12 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 08:33:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 12:38:53 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 18:35:51 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nmap.h"
+
 
 /* Push les structures thread_data dans la liste 'scan->threads' */
 void       push_thread_data(t_scan *scan, t_thread_data *dt)
@@ -37,7 +38,7 @@ static uint16_t		*list_range(uint16_t *source, uint16_t am, uint16_t offset)
 		am = get_portnb(source);
 	
 	list = (uint16_t*)ft_memalloc(sizeof(uint16_t) * (am + 1));
-	ft_memset(list, 0, sizeof(uint16_t) * (am + 1));
+	ft_memset(list, 0, am);
 	
 	for (int i = 0; i < am; i++)
 		list[i] = source[i + offset];
@@ -59,7 +60,7 @@ t_thread_data *allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offs
 	dt->ipv4 = scan->ip;
     dt->type = scan->type;
 	dt->sin = NULL;
-    dt->next = NULL;
+//    dt->next = NULL;
     
     /* Copie les ports afftecté au thread dans sa liste personnel */
 	dt->port_list = list_range(scan->ports, amount, offset);
@@ -74,7 +75,6 @@ void    launch_thread(t_scan *scan, t_thread_data *td)
 	if (pthread_create(&(td->identifier), NULL, scan_callback, (void*)td) == 0)
 		{
 			push_thread_data(scan, td);
-			scan->threads_running++;
 		}
 		else
 			printf("Error: Unable to create thread\n");

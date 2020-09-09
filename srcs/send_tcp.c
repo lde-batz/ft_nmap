@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 15:26:21 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 14:01:17 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 15:55:26 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,14 +125,18 @@ void	send_tcp_packet(t_thread_data *data, uint8_t type, uint16_t port)
 	init_tcphdr(data, tcph, type, port);
 	tcph->check = tcphdr_checksum(tcph, &saddr, &daddr);
 
+	pthread_mutex_lock(&(g_scan->mutex));
 
 /*		Envoie du packet TCP		*/
 	//dprintf(2, "Envoi packet dest: %s port %s source %s port %s \n", saddr.sin_addr.s_addr);
 	if (sendto(sockfd, datagram, sizeof(struct ip) + sizeof(struct tcphdr), 0, (struct sockaddr *)&daddr, sizeof(daddr)) < 0)
 	{
 		perror("Error sendto():");
+		pthread_mutex_unlock(&(g_scan->mutex));
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&(g_scan->mutex));
 
 /*		Envoie du packet TCP		*/
 	close(sockfd);

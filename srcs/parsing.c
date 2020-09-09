@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 10:58:45 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 18:16:54 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	parsing_ip(t_nmap *nmap, char *ip)
 		perror("inet_ntop()");
 		exit_nmap(nmap, EXIT_FAILURE);
 	}
+	freeaddrinfo(res);
 	nmap->ip = (char**)malloc(sizeof(char*)*2);
 	nmap->hostname = (char**)malloc(sizeof(char*)*2);
 	if (!nmap->ip || !nmap->hostname)

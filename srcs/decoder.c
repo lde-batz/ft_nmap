@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/07 18:25:07 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 18:56:37 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,26 +43,57 @@ uint32_t	decode_udp_packet(t_thread_data *thread_data, const uint8_t *header_sta
 	return (0);
 }
 
-uint32_t	decode_icmp_packet(t_thread_data *thread_data, const uint8_t *header_start)
+uint32_t	decode_icmp_packet(t_thread_data *thread_data, const uint8_t *buffer)
 {
-	struct icmphdr   		*icmp_header;
+    struct iphdr	*iph;
+	struct icmphdr	*icmph;
+	struct udphdr	*udphdr;
+	struct tcphdr	*tcph;
+	uint32_t		iphdrlen,header_size;
+
+	uint8_t		(*tcp_handlers[5])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
+					&ack_handler, &null_handler, &fin_handler, &xmas_handler};
 	
+	iph = (struct iphdr *)(buffer  + ETHER_HDR_LEN);
+    iphdrlen = iph->ihl * 4;
+    icmph = (struct icmphdr *)(buffer + iphdrlen  + ETHER_HDR_LEN);
 	thread_data->mismatch = 0;
-	icmp_header = (struct icmphdr *) header_start;
-
-/*	struct iphdr *iphdr = (struct iphdr*)(icmp_header + sizeof(struct icmphdr));
-	struct udphdr *udph = (struct udphdr *)iphdr + sizeof(struct iphdr);
-	dprintf(2, "(Port %d %d thread) Received icmp %d bytes message for port %d\n", thread_data->current_port, thread_data->current_type,
-			udph->len ,udph->uh_dport);
-*/	
-	if (icmp_header->type == 3) /* Unreachable */
+	if (icmph->type == 3)
 	{
-		uint8_t		(*handlers[6])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
-					&ack_handler, &null_handler, &fin_handler, &xmas_handler, &udp_handler};
+		header_size =  ETHER_HDR_LEN + iphdrlen + sizeof(icmph);
+		iph = (struct iphdr *)(buffer + header_size);
+		iphdrlen = iph->ihl * 4;
+		switch ((uint32_t)iph->protocol)
+		{
+			case UDP_CODE:
+				udphdr = (struct udphdr *)(buffer + header_size + sizeof(struct iphdr));
+				if (thread_data->current_type == SCAN_UDP
+					&& thread_data->current_port == ntohs(udphdr->dest))
+				{
+					thread_data->mismatch = 0;
+					udp_handler(thread_data, 42, icmph->code);
+				}
+				else
+					thread_data->mismatch = 1;
+				break ;
 
-		for (uint8_t shift = 1, index = 0; shift < 64 && index < 6; shift = shift << 1, index++)
-			if (thread_data->current_type == shift)
-				handlers[index](thread_data, 42, icmp_header->type);
+			case TCP_CODE:
+				tcph = (struct tcphdr *)(buffer + header_size + sizeof(struct iphdr));
+				if (thread_data->current_type != SCAN_UDP
+					&& thread_data->current_port == ntohs(tcph->th_dport))
+				{
+					thread_data->mismatch = 0;
+					for (uint8_t shift = 1, index = 0; shift < 64 && index < 6; shift = shift << 1, index++)
+						if (thread_data->current_type == shift)
+							tcp_handlers[index](thread_data, 42, icmph->code);
+				}
+				else
+					thread_data->mismatch = 1;
+				break ;
+
+			default :
+				break ;
+		}
 	}
 	return (0);
 }
