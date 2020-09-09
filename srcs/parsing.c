@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 10:58:45 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 20:13:04 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	parsing(t_nmap *nmap, int argc, char **argv)
 
 /*		si aucun scan spécifié -> tous les scans activés		*/
 	if (nmap->type == 0)
-		nmap->type = ~(nmap->type);
+		nmap->type = SCAN_DEF;
 
 /*		si aucun port spécifié -> scanner les ports de 1 à 1024		*/
 	if (nmap->ports == NULL)

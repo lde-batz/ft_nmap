@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/08 10:04:44 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/08 10:55:41 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 20:14:11 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,9 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	{
 		if (!rep->conclusion)
 			rep->conclusion = rep->ack_status;
-		else if (rep->conclusion != rep->ack_status)
+		else if (rep->conclusion & rep->ack_status)
+			rep->conclusion = rep->conclusion & rep->ack_status;
+		else
 			rep->conclusion = PORT_CLOSED;
 	}
 	if (rep->conclusion & PORT_CLOSED)
@@ -58,11 +60,10 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	{
 		if (!rep->conclusion)
 			rep->conclusion = rep->null_status;
-		else if (rep->conclusion != rep->null_status)
-		{
-			if (rep->conclusion ^ PORT_FILTERED || rep->null_status ^ PORT_FILTERED)
-				rep->conclusion = PORT_CLOSED;
-		}
+		else if (rep->conclusion & rep->null_status)
+			rep->conclusion = rep->conclusion & rep->null_status;
+		else
+			rep->conclusion = PORT_CLOSED;
 	}
 	if (rep->conclusion & PORT_CLOSED)
 		return ;
@@ -70,15 +71,10 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	{
 		if (!rep->conclusion)
 			rep->conclusion = rep->fin_status;
-		else if (rep->conclusion != rep->fin_status)
-		{
-			if (!(rep->fin_status ^ PORT_FILTERED) && rep->conclusion & PORT_FILTERED)
-				rep->conclusion = PORT_FILTERED;
-			else if (!(rep->conclusion ^ PORT_FILTERED) && rep->fin_status & PORT_FILTERED)
-				rep->conclusion = PORT_FILTERED;
-			else
-				rep->conclusion = PORT_CLOSED;
-		}
+		else if (rep->conclusion & rep->fin_status)
+			rep->conclusion = rep->conclusion & rep->fin_status;
+		else
+			rep->conclusion = PORT_CLOSED;
 	}
 	if (rep->conclusion & PORT_CLOSED)
 		return ;
@@ -86,15 +82,10 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	{
 		if (!rep->conclusion)
 			rep->conclusion = rep->xmas_status;
-		else if (rep->conclusion != rep->xmas_status)
-		{
-			if (!(rep->xmas_status ^ PORT_FILTERED) && rep->conclusion & PORT_FILTERED)
-				rep->conclusion = PORT_FILTERED;
-			else if (!(rep->conclusion ^ PORT_FILTERED) && rep->xmas_status & PORT_FILTERED)
-				rep->conclusion = PORT_FILTERED;
-			else
-				rep->conclusion = PORT_CLOSED;
-		}
+		else if (rep->conclusion & rep->xmas_status)
+			rep->conclusion = rep->conclusion & rep->xmas_status;
+		else
+			rep->conclusion = PORT_CLOSED;
 	}
 	if (rep->conclusion & PORT_CLOSED)
 		return ;
@@ -102,26 +93,58 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	{
 		if (!rep->conclusion)
 			rep->conclusion = rep->udp_status;
-		else if (rep->conclusion != rep->udp_status)
-		{
-			if (!(rep->udp_status ^ PORT_FILTERED) && rep->conclusion & PORT_FILTERED)
-				rep->conclusion = PORT_FILTERED;
-			else if (!(rep->conclusion ^ PORT_FILTERED) && rep->udp_status & PORT_FILTERED)
-				rep->conclusion = PORT_FILTERED;
-			else
-				rep->conclusion = PORT_CLOSED;
-		}
+		else if (rep->conclusion & rep->udp_status)
+			rep->conclusion = rep->conclusion & rep->udp_status;
+		else
+			rep->conclusion = PORT_CLOSED;
 	}
 	if (rep->conclusion & PORT_CLOSED)
 		return ;
 }
 
-
 void	set_conclusion_report(t_scan *scan)
 {
-	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
+	t_scan_report *rep = scan->report;
+	t_scan_report *before = scan->report;
+	t_scan_report *last_open = NULL;
+
+	scan->report_open = NULL;
+	while (rep != NULL)
 	{
 		if (!conclusion_one_scan(scan->type, rep))
 			conclusion_many_scans(scan->type, rep);
+
+		if (rep->conclusion & PORT_OPEN)
+		{
+			if (scan->report_open == NULL)
+			{
+				scan->report_open = rep;
+				last_open = rep;
+			}
+			else
+			{
+				last_open->next = rep;
+				last_open = rep;
+			}
+			if (rep == scan->report)
+			{
+				scan->report = rep->next;
+				before = scan->report;
+				rep->next = NULL;
+				rep = scan->report;
+			}
+			else
+			{
+				before->next = rep->next;
+				rep->next = NULL;
+				rep = before->next;
+			}
+		}
+		else
+		{
+			if (rep != scan->report)
+				before = before->next;
+			rep = rep->next;
+		}
 	}
 }
