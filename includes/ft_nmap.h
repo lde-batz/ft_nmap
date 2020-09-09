@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_nmap.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 18:57:22 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 20:37:43 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 #define TCP_CODE			6
 #define UDP_CODE			17
 
+# define SCAN_DEF			0x3F
 # define SCAN_SYN			0x01
 # define SCAN_NULL			0x04 
 # define SCAN_ACK			0x02
@@ -118,7 +119,7 @@ typedef struct 				s_scan
 {
 	char					*name;	
 	char					*ip;
-	char					scanning;
+	u_int8_t				scanning;
 	struct s_scan			*next;
 	uint8_t					type;
 	t_scan_report			*report;

@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 15:21:33 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/09 12:06:42 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 void	init_t_nmap(t_nmap *nmap)
 {
+	if (getuid() != 0)
+	{
+		dprintf(STDERR_FILENO, "Error: only root is permitted\n");
+        exit(EXIT_FAILURE);
+	}
 	ft_memset(nmap, 0, sizeof(nmap));
 	nmap->ip = NULL;
 	nmap->type = 0;

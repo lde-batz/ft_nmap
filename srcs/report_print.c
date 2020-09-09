@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   report_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 16:39:04 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 12:25:25 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/09 20:35:05 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nmap.h"
+
+char *service_to_str(uint16_t port)
+{
+	if (port == 80)
+		return ("http");
+	return ("Unassigned");
+}
 
 char *status_to_str(uint8_t status)
 {
@@ -23,7 +30,7 @@ char *status_to_str(uint8_t status)
 	else if (status == PORT_UNFILTERED)
 		return ("UNFILTERED");
 	else if (status & PORT_OPEN && status & PORT_FILTERED)
-		return ("OPEN | FILTERED");
+		return ("OPEN|FILTERED");
 	else
 	{
 		return ("UNKNOWN");
@@ -82,17 +89,117 @@ t_scan_report	*sort_report(t_scan_report *rep)
 	return rep;
 }
 
+void	print_results(uint8_t type, t_scan_report *rep)
+{
+	uint8_t	scan_by_line = 0;
+	char	print_scans[48] = "";
+
+	if (type & SCAN_SYN)
+	{
+		sprintf(print_scans, "SYN(%s) ", status_to_str(rep->syn_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_NULL)
+	{
+		sprintf(print_scans, "%sNULL(%s) ", print_scans, status_to_str(rep->null_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_FIN)
+	{
+		if (scan_by_line >= 2)
+		{
+			printf("%s\n%-32s", print_scans, "");
+			scan_by_line = 0;
+			sprintf(print_scans, "");
+		}
+		sprintf(print_scans, "%sFIN(%s) ", print_scans, status_to_str(rep->fin_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_XMAS)
+	{
+		if (scan_by_line >= 2)
+		{
+			printf("%s\n%-32s", print_scans, "");
+			scan_by_line = 0;
+			sprintf(print_scans, "");
+		}
+		sprintf(print_scans, "%sXMAS(%s) ", print_scans, status_to_str(rep->xmas_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_ACK)
+	{
+		if (scan_by_line >= 2)
+		{
+			printf("%s\n%-32s", print_scans, "");
+			scan_by_line = 0;
+			sprintf(print_scans, "");
+		}
+		sprintf(print_scans, "%sACK(%s) ", print_scans, status_to_str(rep->ack_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_UDP)
+	{
+		if (scan_by_line >= 2)
+		{
+			printf("%s\n%-32s", print_scans, "");
+			scan_by_line = 0;
+			sprintf(print_scans, "");
+		}
+		sprintf(print_scans, "%sUDP(%s) ", print_scans, status_to_str(rep->udp_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_CON)
+	{
+		if (scan_by_line >= 2)
+		{
+			printf("%s\n%-32s", print_scans, "");
+			scan_by_line = 0;
+			sprintf(print_scans, "");
+		}
+		sprintf(print_scans, "%sCON(%s) ", print_scans, status_to_str(rep->con_status));
+		scan_by_line++;
+	}
+	if (type & SCAN_MAI)
+	{
+		if (scan_by_line >= 2)
+		{
+			printf("%s\n%-32s", print_scans, "");
+			scan_by_line = 0;
+			sprintf(print_scans, "");
+		}
+		sprintf(print_scans, "%sMAI(%s)", print_scans, status_to_str(rep->mai_status));
+		scan_by_line++;
+	}
+	printf("%-40s", print_scans);
+}
 void	show_report(t_scan *scan)
 {
 	scan->report = sort_report(scan->report);
 	set_conclusion_report(scan);
-	printf("\n");
-	printf("Port\tService Name\t\tResults\t\t\t\t\t\tConclusion\n");
-	printf("-----------------------------------------------------------------------------------------------\n");
+	if (scan->report_open != NULL)
+	{
+		printf("\n");
+		printf("Open ports:\n");
+		printf("Port\tService Name\t\tResults\t\t\t\t\tConclusion\n");
+		printf("-----------------------------------------------------------------------------------------------\n");
+	}
+	for (t_scan_report *rep_open = scan->report_open; rep_open != NULL; rep_open = rep_open->next)
+	{
+		printf("%-8.8s%-24.24s", ft_itoa(rep_open->portnumber), service_to_str(rep_open->portnumber));
+		print_results(scan->type, rep_open);
+		printf("%s\n", status_to_str(rep_open->conclusion));
+	}
+	if (scan->report != NULL)
+	{
+		printf("\n");
+		printf("Closed/Filtered/Unfiltered ports:\n");
+		printf("Port\tService Name\t\tResults\t\t\t\tConclusion\n");
+		printf("-----------------------------------------------------------------------------------------------\n");
+	}
 	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
 	{
-		printf("- Port %d\t\tSYN(%s) ACK(%s) UDP(%s)   CONCLUSION(%s)\n", rep->portnumber,
-		status_to_str(rep->syn_status), status_to_str(rep->ack_status), status_to_str(rep->udp_status),
-		status_to_str(rep->conclusion));
+		printf("%-8.8s%-24.24s", ft_itoa(rep->portnumber), service_to_str(rep->portnumber));
+		print_results(scan->type, rep);
+		printf("%s\n", status_to_str(rep->conclusion));
 	}
 }
