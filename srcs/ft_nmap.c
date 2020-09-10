@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 22:29:10 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/10 11:54:54 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,18 @@ static void    print_config(t_nmap *nmap)
 	dprintf(STDOUT_FILENO, "-> %d threads.\n", nmap->threads);
 }
 
-void	print_scanning(t_scan *scan)
-{
-	scan->scanning = 1;
-	dprintf(STDOUT_FILENO, "Scan report for %s (%s)\n", scan->name, scan->ip);
-	
-}
-
 void	print_finished_scan(t_scan *scan, struct timeval *time_start)
 {
 	double			time_scan;
 	struct timeval	tv;
 
 	scan->scanning = 0;
-	dprintf(STDOUT_FILENO, "\nScan for %s finished\n", scan->ip);
 	gettimeofday(&tv, NULL);
 	time_scan = tv.tv_sec - time_start->tv_sec;
 	time_scan *= 1000000;
 	time_scan += tv.tv_usec - time_start->tv_usec;
 	time_scan /= 1000000;
-	dprintf(STDOUT_FILENO, "Time of scan: %f secs\n", time_scan);
+	dprintf(STDOUT_FILENO, "\nScan finished in %.3f secs\n\n", time_scan);
 }
 
 void	ft_nmap(t_nmap *nmap)
@@ -62,8 +54,7 @@ void	ft_nmap(t_nmap *nmap)
 	for (scan = nmap->scan; scan != NULL; scan = scan->next)
 	{
 		g_scan = scan;
-		print_scanning(scan);
-		
+		scan->scanning = 1;
 	//	if (!check_host_up())
 	//		continue ;
 			
@@ -78,11 +69,11 @@ void	ft_nmap(t_nmap *nmap)
 		}
 		else						/* Thread >= 1 */
 			dispatch_threads(nmap, scan);
-
-		print_finished_scan(scan, &tv);
+		dprintf(STDOUT_FILENO, "\n\nScan report for %s (%s)\n", scan->name, scan->ip);
 		show_report(scan);
 		free_reports(scan);
 		free_threads_data(scan);
+		print_finished_scan(scan, &tv);
 	}
 	free_scanlist(nmap);
 }

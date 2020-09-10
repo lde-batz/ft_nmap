@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 20:59:08 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/01 15:19:35 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/10 11:50:47 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,4 @@ void	parsing_file(t_nmap *nmap, char *file)
 	}
 	set_nmap_ip_hostname(nmap, l_hostname, len);
 	free_hostname_file(l_hostname);
-
-	printf("sizeof = %li\n", sizeof(t_lstcontainer));
 }
