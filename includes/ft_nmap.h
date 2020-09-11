@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 22:14:23 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:08:37 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,15 @@
 #define TCP_CODE			6
 #define UDP_CODE			17
 
-# define SCAN_DEF			0x3F
+# define SCAN_DEF			0xFF
 # define SCAN_SYN			0x01
 # define SCAN_NULL			0x04 
 # define SCAN_ACK			0x02
 # define SCAN_FIN			0x08
 # define SCAN_XMAS			0x10
-# define SCAN_UDP			0x20
-# define SCAN_CON			0x40
-# define SCAN_MAI			0x80
+# define SCAN_MAI			0x20
+# define SCAN_UDP			0x40
+# define SCAN_CON			0x80
 
 # define MAX_PORTS			1024
 # define TIMEOUT			1000
@@ -153,6 +153,7 @@ uint8_t			null_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_co
 uint8_t			fin_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
 uint8_t			xmas_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
 uint8_t			udp_handler(t_thread_data *thread_data, uint8_t flags, int8_t icmp_code);
+uint8_t			mai_handler(t_thread_data *thread_data, uint8_t tcp_flags, int8_t icmp_code);
 
 void			free_scanlist(t_nmap *nmap);
 void			free_reports(t_scan *scan);

@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 22:04:26 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:07:19 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ t_scan	*g_scan;
 
 void	no_response(t_thread_data	*thread_data)
 {
-	uint8_t		(*handlers[6])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
-					&ack_handler, &null_handler, &fin_handler, &xmas_handler, &udp_handler};
+	uint8_t		(*handlers[7])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
+					&ack_handler, &null_handler, &fin_handler, &xmas_handler, &mai_handler, &udp_handler};
 
 //dprintf(STDERR_FILENO, "Scan %d on port %u: no reponse\n", thread_data->current_type, thread_data->current_port);
-	for (uint8_t shift = 1, index = 0; shift < 64 && index < 6; shift = shift << 1, index++)
+	for (uint8_t shift = 1, index = 0; shift < 128 && index < 7; shift = shift << 1, index++)
 		if (thread_data->current_type == shift)
 			handlers[index](thread_data, 0, -1);
 }
@@ -99,6 +99,12 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 
 	data->current_type = type;
 	data->current_port = port;
+
+	if (type == SCAN_CON)
+	{
+		send_packet(data, type, port);
+		return (0);
+	}
 
 	/* Récupération du device, et des paremètres résaux */
 	device = get_pcap_device(&net, &mask, errbuf);
@@ -188,13 +194,14 @@ void    *scan_callback(void *callback_data)
 		tdata->report = create_scan_report(tdata->port_list[i]);
 		push_report(tdata);
 		
-		for (uint8_t btshift = 1; btshift < 64; btshift = btshift << 1)
+		for (uint8_t btshift = 1; btshift <= 128; btshift = btshift << 1)
 		{
-			if (tdata->type & btshift) {
+			if (tdata->type & btshift)
 				portscan(tdata, btshift, tdata->port_list[i]);
-			}
+			if (btshift == 128)
+				break ;
+
 		}
-		
 	}
 	return (NULL);
 }

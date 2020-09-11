@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/07 12:32:04 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:05:56 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	send_tcp_packet_connect(t_thread_data *data, uint16_t port)
 		exit(EXIT_FAILURE);
 	}
 	
-	fcntl(sockfd, F_SETFL, O_NONBLOCK);
-
 /*		Envoie du packet TCP		*/
+pthread_mutex_lock(&(g_scan->mutex));
 	if (connect(sockfd, (struct sockaddr *)&daddr, sizeof(daddr)) == 0)
-		printf("port: %i -> open\n", port);
+		data->report->con_status = PORT_OPEN;
 	else
-		printf("port: %i -> close\n", port);
-	printf("suivant\n");
+		data->report->con_status = PORT_CLOSED;
+	close(sockfd);
+pthread_mutex_unlock(&(g_scan->mutex));
 }
 
 int		send_packet(t_thread_data *data, uint8_t type, uint16_t port)

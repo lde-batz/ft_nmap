@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 13:47:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 22:03:14 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:06:53 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,19 @@ uint8_t     xmas_handler(t_thread_data *thread_data, uint8_t tcp_flags, int8_t i
 		thread_data->report->xmas_status = PORT_CLOSED;
 	else
 		thread_data->report->xmas_status = PORT_UNKNOWN;
+	return (0);
+}
+
+uint8_t		mai_handler(t_thread_data *thread_data, uint8_t tcp_flags, int8_t icmp_code)
+{
+	if (icmp_code != -1)
+		thread_data->report->mai_status = PORT_FILTERED;
+	else if (tcp_flags == 0)
+		thread_data->report->mai_status = PORT_OPEN | PORT_FILTERED;
+	else if (tcp_flags & TH_RST)
+		thread_data->report->mai_status = PORT_CLOSED;
+	else
+		thread_data->report->mai_status = PORT_UNKNOWN;
 	return (0);
 }
 

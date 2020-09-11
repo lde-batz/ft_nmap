@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/10 11:54:54 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:07:00 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,15 @@ static void    print_config(t_nmap *nmap)
 	dprintf(STDOUT_FILENO, "Starting ft_nmap.\n");
 	dprintf(STDOUT_FILENO, "Scan configuration:\n");
 	dprintf(STDOUT_FILENO, "-> %i ports to scan.\n", nmap->ports_len);
-	dprintf(STDOUT_FILENO, "-> %s%s%s%s%s%sscan\n",
+	dprintf(STDOUT_FILENO, "-> %s%s%s%s%s%s%s%s	scan\n",
 		(nmap->type & SCAN_SYN) ?  "SYN " : "",
 		(nmap->type & SCAN_NULL) ?  "NULL " : "",
 		(nmap->type & SCAN_ACK) ?  "ACK " : "",
 		(nmap->type & SCAN_FIN) ?  "FIN " : "",
 		(nmap->type & SCAN_XMAS) ?  "XMAS " : "",
-		(nmap->type & SCAN_UDP) ?  "UDP " : "");
+		(nmap->type & SCAN_UDP) ?  "UDP " : "",
+		(nmap->type & SCAN_CON) ?  "CON " : "",
+		(nmap->type & SCAN_MAI) ?  "MAI " : "");
 	dprintf(STDOUT_FILENO, "-> %d threads.\n", nmap->threads);
 }
 
@@ -55,6 +57,7 @@ void	ft_nmap(t_nmap *nmap)
 	{
 		g_scan = scan;
 		scan->scanning = 1;
+		
 	//	if (!check_host_up())
 	//		continue ;
 			

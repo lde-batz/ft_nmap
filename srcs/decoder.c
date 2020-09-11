@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/09 22:04:23 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 11:48:15 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,26 @@ uint8_t	decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_star
 	const struct tcphdr *tcp_header;
 	uint8_t             resp_flags;
 	
-	uint8_t		(*handlers[5])(t_thread_data *, uint8_t, int8_t)= { &syn_handler, &ack_handler, &null_handler, &fin_handler, &xmas_handler};
+	uint8_t		(*handlers[6])(t_thread_data *, uint8_t, int8_t)= { &syn_handler, &ack_handler,
+		&null_handler, &fin_handler, &xmas_handler, &mai_handler};
 
 	tcp_header = (const struct tcphdr*)header_start;
 	header_size = 4 * tcp_header->th_off;
 	resp_flags = tcp_header->th_flags;
 
-	if (ntohl(thread_data->seq) + 1 == ntohl(tcp_header->th_ack))
+	if (thread_data->current_type != SCAN_ACK && thread_data->current_type != SCAN_MAI && thread_data->current_type != SCAN_NULL)
 	{
-		thread_data->mismatch = 0;
-		for (uint8_t shift = 1, index = 0; shift < 64 && index < 5; shift = shift << 1, index++)
-			if (thread_data->current_type == shift)
-				handlers[index](thread_data, resp_flags, -1);
+		if (ntohl(thread_data->seq) + 1 != ntohl(tcp_header->th_ack))
+		{
+			thread_data->mismatch = 1;
+			return (0);
+		}
 	}
-	else
-		thread_data->mismatch = 1;
+	thread_data->mismatch = 0;
+	for (uint8_t shift = 1, index = 0; shift < 64 && index < 6; shift = shift << 1, index++)
+		if (thread_data->current_type == shift)
+			handlers[index](thread_data, resp_flags, -1);
+
 	return (0);
 }
 
@@ -52,8 +57,8 @@ uint32_t	decode_icmp_packet(t_thread_data *thread_data, const uint8_t *buffer)
 	struct tcphdr	*tcph;
 	uint32_t		iphdrlen,header_size;
 
-	uint8_t		(*tcp_handlers[5])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
-					&ack_handler, &null_handler, &fin_handler, &xmas_handler};
+	uint8_t		(*tcp_handlers[6])(t_thread_data *, uint8_t, int8_t) = { &syn_handler,
+					&ack_handler, &null_handler, &fin_handler, &xmas_handler, &mai_handler};
 	
 	iph = (struct iphdr *)(buffer  + ETHER_HDR_LEN);
     iphdrlen = iph->ihl * 4;
