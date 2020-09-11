@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/03 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/11 11:48:15 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:29:04 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 uint8_t	decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_start)
 {
-	uint32_t            header_size;
 	const struct tcphdr *tcp_header;
 	uint8_t             resp_flags;
 	
@@ -22,7 +21,6 @@ uint8_t	decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_star
 		&null_handler, &fin_handler, &xmas_handler, &mai_handler};
 
 	tcp_header = (const struct tcphdr*)header_start;
-	header_size = 4 * tcp_header->th_off;
 	resp_flags = tcp_header->th_flags;
 
 	if (thread_data->current_type != SCAN_ACK && thread_data->current_type != SCAN_MAI && thread_data->current_type != SCAN_NULL)

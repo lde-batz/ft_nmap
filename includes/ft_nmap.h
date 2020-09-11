@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/11 12:08:37 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 15:28:54 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@
 # define SCAN_CON			0x80
 
 # define MAX_PORTS			1024
-# define TIMEOUT			1000
+# define TIMEOUT			500
 # define RETRIES			2
 
 # define PORT_CLOSED		0x1

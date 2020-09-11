@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/11 12:07:19 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/11 12:32:13 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	apply_pcap_filter(data, handle, net, port);
 
 	/* Seq/Ack */
-	data->seq = htonl(ft_abs(data->identifier + (port * 2) + type));
+	data->seq = htonl(ft_abs((int32_t)data->identifier + (port * 2) + type));
 	
 	/* Envois de packets */
 	send_packet(data, type, port);
