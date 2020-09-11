@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/08 10:04:44 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 20:14:11 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/11 15:19:14 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,11 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	}
 	if (rep->conclusion & PORT_CLOSED)
 		return ;
+	if (type & SCAN_CON && rep->con_status)
+	{
+		rep->conclusion = rep->con_status;
+		return ;
+	}
 	if (type & SCAN_ACK && rep->ack_status)
 	{
 		if (!rep->conclusion)
@@ -100,6 +105,15 @@ void	conclusion_many_scans(uint8_t type, t_scan_report *rep)
 	}
 	if (rep->conclusion & PORT_CLOSED)
 		return ;
+	if (type & SCAN_MAI && rep->mai_status)
+	{
+		if (!rep->conclusion)
+			rep->conclusion = rep->mai_status;
+		else if (rep->conclusion & rep->mai_status)
+			rep->conclusion = rep->conclusion & rep->mai_status;
+		else
+			rep->conclusion = PORT_CLOSED;
+	}
 }
 
 void	set_conclusion_report(t_scan *scan)
