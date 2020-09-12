@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/16 14:39:55 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 22:04:04 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/12 13:00:34 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ void	exit_nmap(t_nmap *nmap, int exit_opt)
 			}
 			free(nmap->ip);
 		}
+		if (nmap->service_name)
+			free(nmap->service_name);
 	}
 	exit(exit_opt);
 }

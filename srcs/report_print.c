@@ -6,16 +6,16 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 16:39:04 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 20:35:05 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/12 12:45:22 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nmap.h"
 
-char *service_to_str(uint16_t port)
+char *service_to_str(t_nmap *nmap, uint16_t port)
 {
-	if (port == 80)
-		return ("http");
+	if (port <= 995)
+		return (nmap->service_name[port]);
 	return ("Unassigned");
 }
 
@@ -172,7 +172,7 @@ void	print_results(uint8_t type, t_scan_report *rep)
 	}
 	printf("%-40s", print_scans);
 }
-void	show_report(t_scan *scan)
+void	show_report(t_scan *scan, t_nmap *nmap)
 {
 	scan->report = sort_report(scan->report);
 	set_conclusion_report(scan);
@@ -185,7 +185,7 @@ void	show_report(t_scan *scan)
 	}
 	for (t_scan_report *rep_open = scan->report_open; rep_open != NULL; rep_open = rep_open->next)
 	{
-		printf("%-8.8s%-24.24s", ft_itoa(rep_open->portnumber), service_to_str(rep_open->portnumber));
+		printf("%-8.8s%-24.24s", ft_itoa(rep_open->portnumber), service_to_str(nmap, rep_open->portnumber));
 		print_results(scan->type, rep_open);
 		printf("%s\n", status_to_str(rep_open->conclusion));
 	}
@@ -198,7 +198,7 @@ void	show_report(t_scan *scan)
 	}
 	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
 	{
-		printf("%-8.8s%-24.24s", ft_itoa(rep->portnumber), service_to_str(rep->portnumber));
+		printf("%-8.8s%-24.24s", ft_itoa(rep->portnumber), service_to_str(nmap, rep->portnumber));
 		print_results(scan->type, rep);
 		printf("%s\n", status_to_str(rep->conclusion));
 	}
