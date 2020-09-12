@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/16 11:09:28 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 20:53:59 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/12 17:24:10 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ t_num_ports	*get_all_ports(char *str)
 				return (free_num_ports(num_ports));
 			}
 		}
-		if (nb1 < 1)
+		if (nb1 < 1 || nb1 > 65535)
 		{
 			free_double_char(str_split);
 			return (free_num_ports(num_ports));

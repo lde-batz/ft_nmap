@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 12:22:07 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/12 17:11:44 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ void	init_t_nmap(t_nmap *nmap)
         exit(EXIT_FAILURE);
 	}
 	ft_memset(nmap, 0, sizeof(nmap));
+	nmap->hostname = NULL;
 	nmap->ip = NULL;
+	nmap->ip_len = 0;
 	nmap->type = 0;
 	nmap->ports = NULL;
 	nmap->scan = NULL;

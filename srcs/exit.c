@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/16 14:39:55 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 13:00:34 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/12 17:12:39 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	exit_nmap(t_nmap *nmap, int exit_opt)
 	{
 		if (nmap->ports)
 			free(nmap->ports);
-
 		if (nmap->hostname)
 		{
 			i = 0;
