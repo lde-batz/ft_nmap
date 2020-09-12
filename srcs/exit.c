@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/16 14:39:55 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 17:12:39 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/12 17:47:17 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	free_threads_data(t_scan *sc)
 void	exit_nmap(t_nmap *nmap, int exit_opt)
 {
 	int	i;
+	t_scan	*free_scan;
 
 	if (nmap)
 	{
@@ -83,6 +84,12 @@ void	exit_nmap(t_nmap *nmap, int exit_opt)
 		}
 		if (nmap->service_name)
 			free(nmap->service_name);
+		while (nmap->scan)
+		{
+			free_scan = nmap->scan;
+			nmap->scan = nmap->scan->next;
+			free(free_scan);
+		}
 	}
 	exit(exit_opt);
 }

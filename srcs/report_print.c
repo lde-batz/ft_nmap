@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/07 16:39:04 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 12:45:22 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/12 17:34:36 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,8 @@ void	print_results(uint8_t type, t_scan_report *rep)
 }
 void	show_report(t_scan *scan, t_nmap *nmap)
 {
+	char	*str_port;
+	
 	scan->report = sort_report(scan->report);
 	set_conclusion_report(scan);
 	if (scan->report_open != NULL)
@@ -185,9 +187,11 @@ void	show_report(t_scan *scan, t_nmap *nmap)
 	}
 	for (t_scan_report *rep_open = scan->report_open; rep_open != NULL; rep_open = rep_open->next)
 	{
-		printf("%-8.8s%-24.24s", ft_itoa(rep_open->portnumber), service_to_str(nmap, rep_open->portnumber));
+		str_port = ft_itoa(rep_open->portnumber);
+		printf("%-8.8s%-24.24s", str_port, service_to_str(nmap, rep_open->portnumber));
 		print_results(scan->type, rep_open);
 		printf("%s\n", status_to_str(rep_open->conclusion));
+		free(str_port);
 	}
 	if (scan->report != NULL)
 	{
@@ -198,8 +202,10 @@ void	show_report(t_scan *scan, t_nmap *nmap)
 	}
 	for (t_scan_report *rep = scan->report; rep != NULL; rep = rep->next)
 	{
-		printf("%-8.8s%-24.24s", ft_itoa(rep->portnumber), service_to_str(nmap, rep->portnumber));
+		str_port = ft_itoa(rep->portnumber);
+		printf("%-8.8s%-24.24s", str_port, service_to_str(nmap, rep->portnumber));
 		print_results(scan->type, rep);
 		printf("%s\n", status_to_str(rep->conclusion));
+		free(str_port);
 	}
 }
