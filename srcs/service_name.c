@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   service_name.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 12:05:54 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 12:43:00 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/14 15:01:04 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void init_service_name(t_nmap *nmap)
 		perror("malloc()");
 		exit_nmap(nmap, EXIT_FAILURE);
 	}
-	for (int i = 0; i < 956; i++)
+	for (int i = 0; i < 996; i++)
 		nmap->service_name[i] = "Unassigned";
 	nmap->service_name[1] = "tcpmux";
 	nmap->service_name[5] = "rje";
@@ -27,9 +27,10 @@ void init_service_name(t_nmap *nmap)
 	nmap->service_name[9] = "discard";
 	nmap->service_name[11] = "systat";
 	nmap->service_name[13] = "daytime";
+	nmap->service_name[15] = "netstat";
 	nmap->service_name[17] = "qotd";
 	nmap->service_name[18] = "msp";
-	nmap->service_name[19] = "chargen";
+	nmap->service_name[19] = "loaden";
 	nmap->service_name[20] = "ftp-data";
 	nmap->service_name[21] = "ftp";
 	nmap->service_name[22] = "ssh";
@@ -59,6 +60,7 @@ void init_service_name(t_nmap *nmap)
 	nmap->service_name[427] = "svrloc";
 	nmap->service_name[443] = "https";
 	nmap->service_name[444] = "snpp";
+	nmap->service_name[445] = "smb";
 	nmap->service_name[464] = "kpasswd";
 	nmap->service_name[515] = "printer";
 	nmap->service_name[532] = "netnews";

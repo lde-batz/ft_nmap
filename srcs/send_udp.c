@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/04 17:33:09 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/09 22:03:46 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/14 14:57:33 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	pseudo_csum(struct udphdr *udph, struct sockaddr_in *source, struct sockadd
 	memcpy(pseudogram + sizeof(struct pseudo_header) , udph , sizeof(struct udphdr));
 	
 	udph->check = csum( (unsigned short*) pseudogram , psize);
+	free(pseudogram);
 }
 
 void	send_udp_packet(t_thread_data *tdata, uint16_t port)

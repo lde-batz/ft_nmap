@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 12:51:01 by seb               #+#    #+#             */
-/*   Updated: 2020/09/14 14:05:04 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/14 15:01:21 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void    build_scanlist(t_nmap *nmap)
 
     for (int i = 0; nmap->ip[i] != NULL; i++)
     {
-        dprintf(2, "Allocate scan\n");
         if (!(scan = ft_memalloc(sizeof(t_scan))))
         {
             dprintf(STDERR_FILENO, "Error: Could not allocate memory for scan structure.\n");
