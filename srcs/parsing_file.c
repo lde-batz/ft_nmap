@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_file.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 20:59:08 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/10 11:50:47 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/12 17:13:40 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	parsing_file(t_nmap *nmap, char *file)
 	l_hostname = NULL;
 	if (!(ft_strcmp(file, "/dev/zero")) || (fd = open(file, O_RDONLY)) < 0)
 	{
-		printf("Bad argurment --file '%s'", file);
+		printf("Bad argurment --file '%s'\n", file);
 		exit_nmap(nmap, EXIT_FAILURE);
 	}
 	while (get_next_line(fd, &line))
@@ -111,7 +111,7 @@ void	parsing_file(t_nmap *nmap, char *file)
 	close(fd);
 	if (l_hostname == NULL)
 	{
-		printf("Bad file '%s': it's empty or all hosts are bad", file);
+		printf("Bad file '%s': it's empty or all hosts are bad\n", file);
 		exit_nmap(nmap, EXIT_FAILURE);
 	}
 	set_nmap_ip_hostname(nmap, l_hostname, len);

@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:22:45 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/11 15:28:54 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/14 14:09:10 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ typedef struct 				s_scan_report
 	uint8_t					udp_status;
 	uint8_t					con_status;
 	uint8_t					mai_status;
-	char					service_name[64];
 	uint8_t					conclusion;
 	uint8_t					udp_mismatch;
 	struct s_scan_report	 *next;
@@ -144,6 +143,7 @@ typedef struct				s_nmap
 	uint16_t				*ports;
 	uint16_t				ports_len;
 	t_scan					*scan;
+	char					**service_name;
 }							t_nmap;
 
 
@@ -183,7 +183,7 @@ uint8_t			decode_tcp_packet(t_thread_data *thread_data, const uint8_t *header_st
 uint32_t		decode_udp_packet(t_thread_data *thread_data, const uint8_t *header_start);
 uint32_t		decode_icmp_packet(t_thread_data *thread_data, const uint8_t *buffer);
 
-void			show_report(t_scan *scan);
+void			show_report(t_scan *scan, t_nmap *nmap);
 void			set_conclusion_report(t_scan *scan);
 
 void			sig_alarm(int sig, siginfo_t *siginfo, void *context);
@@ -197,6 +197,8 @@ void			parsing(t_nmap *nmap, int argc, char **argv);
 void			parsing_ports(t_nmap *nmap, char *ports);
 
 void			parsing_file(t_nmap *nmap, char *file);
+
+void			init_service_name(t_nmap *nmap);
 
 void			exit_nmap(t_nmap *nmap, int exit_opt);
 

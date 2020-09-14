@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:32:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/11 12:07:00 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/14 14:11:23 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void	ft_nmap(t_nmap *nmap)
 		else						/* Thread >= 1 */
 			dispatch_threads(nmap, scan);
 		dprintf(STDOUT_FILENO, "\n\nScan report for %s (%s)\n", scan->name, scan->ip);
-		show_report(scan);
+		show_report(scan, nmap);
+		print_finished_scan(scan, &tv);
 		free_reports(scan);
 		free_threads_data(scan);
-		print_finished_scan(scan, &tv);
 	}
-	free_scanlist(nmap);
+//	free_scanlist(nmap);
 }

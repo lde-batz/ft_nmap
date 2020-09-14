@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/10 11:50:57 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/12 17:11:44 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ void	init_t_nmap(t_nmap *nmap)
         exit(EXIT_FAILURE);
 	}
 	ft_memset(nmap, 0, sizeof(nmap));
+	nmap->hostname = NULL;
 	nmap->ip = NULL;
+	nmap->ip_len = 0;
 	nmap->type = 0;
 	nmap->ports = NULL;
 	nmap->scan = NULL;
@@ -32,6 +34,9 @@ void	init_t_nmap(t_nmap *nmap)
 	ft_bzero(&act, sizeof(act));
 	act.sa_sigaction = &sig_alarm;
 	sigaction(SIGALRM, &act, NULL);
+
+/*		Initialisation des noms de services		*/
+	init_service_name(nmap);
 }
 
 int		main(int argc, char **argv)

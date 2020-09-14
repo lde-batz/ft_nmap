@@ -6,7 +6,7 @@
 #    By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/15 16:25:16 by lde-batz          #+#    #+#              #
-#    Updated: 2020/09/08 10:05:26 by lde-batz         ###   ########.fr        #
+#    Updated: 2020/09/12 12:21:49 by lde-batz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRC += handler.c
 SRC += signal.c
 SRC += report_print.c
 SRC += report_conclusion.c
+SRC += service_name.c
 
 
 SRC_DIR = srcs/
