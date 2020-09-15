@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/15 14:47:01 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/15 15:04:48 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,20 @@ void	send_tcp_packet_connect(t_thread_data *data, uint16_t port)
 	}
 	
 /*		Envoie du packet TCP		*/
-pthread_mutex_lock(&(g_scan->mutex));
-fcntl(sockfd, F_SETFL, O_NONBLOCK);
-	if (connect(sockfd, (struct sockaddr *)&daddr, sizeof(daddr)) == 0)
-		data->report->con_status = PORT_OPEN;
-	else
-		data->report->con_status = PORT_CLOSED;
+	pthread_mutex_lock(&(g_scan->mutex));
+	fcntl(sockfd, F_SETFL, O_NONBLOCK);
+	for (int i = 0; i < 1500000; i++)
+	{
+		if (connect(sockfd, (struct sockaddr *)&daddr, sizeof(daddr)) == 0)
+		{
+			data->report->con_status = PORT_OPEN;
+			break;
+		}
+		else
+			data->report->con_status = PORT_CLOSED;
+	}
 	close(sockfd);
-pthread_mutex_unlock(&(g_scan->mutex));
+	pthread_mutex_unlock(&(g_scan->mutex));
 }
 
 int		send_packet(t_thread_data *data, uint8_t type, uint16_t port)
