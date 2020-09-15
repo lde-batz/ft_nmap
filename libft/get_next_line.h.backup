@@ -3,31 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: cababou <cababou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/09 10:34:28 by ffoissey          #+#    #+#             */
-/*   Updated: 2020/09/15 12:01:20 by seb              ###   ########.fr       */
+/*   Created: 2019/05/06 03:21:32 by cababou           #+#    #+#             */
+/*   Updated: 2019/05/06 05:23:49 by cababou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include "libft.h"
-# include <stdlib.h>
-# include <unistd.h>
-# define BUFF_SIZE 256
-# define SUCCESS 0
-# define FAILURE -1
+# define BUFF_SIZE 20
 
-typedef struct		s_gnl_file
+# include "libft.h"
+# include <unistd.h>
+
+typedef struct		s_file
 {
+	char			*line;
 	int				fd;
 	int				state;
-	char			*rest;
-	char			*cur;
-}					t_gnl_file;
+}					t_file;
 
-int					get_next_line(const int fd, char **line);
+int					n_gnl(int fd, char **line);
 
 #endif

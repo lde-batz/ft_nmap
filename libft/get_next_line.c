@@ -3,121 +3,110 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cababou <cababou@student.42.fr>            +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/06 03:19:27 by cababou           #+#    #+#             */
-/*   Updated: 2019/05/06 06:35:02 by cababou          ###   ########.fr       */
+/*   Created: 2019/07/09 10:35:19 by ffoissey          #+#    #+#             */
+/*   Updated: 2020/09/15 12:02:07 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-t_list	*get_file(t_lstcontainer *fds, int fd)
+static char	*ft_strjoin_protected(char const *s1, char const *s2)
 {
-	t_list	*tmp;
-	t_file	*tmp_file;
+	char	*s_new;
+	size_t	len_s1;
+	size_t	len_s2;
 
-	tmp = fds->firstelement;
-	while (tmp)
-	{
-		tmp_file = (t_file *)tmp->content;
-		if (tmp_file->fd == fd)
-			return (tmp);
-		tmp = tmp->next;
-	}
-	if (!(tmp_file = mmalloc(sizeof(t_file))))
+	if (!s1 && !s2)
 		return (NULL);
-	tmp_file->fd = fd;
-	tmp_file->state = 1;
-	tmp_file->line = ft_strnew(0, 0);
-	lstcontainer_add(fds, tmp_file);
-	return (fds->lastelement);
+	if (!s1)
+		s_new = ft_strdup((char *)s2);
+	else if (!s2)
+		s_new = ft_strdup((char *)s1);
+	else
+	{
+		len_s1 = ft_strlen(s1);
+		len_s2 = ft_strlen(s2);
+		if (!(s_new = (char *)malloc(sizeof(char) * (len_s1 + len_s2 + 1))))
+			return (NULL);
+		ft_strncpy(s_new, s1, ft_strlen(s1));
+		ft_strcpy(s_new + ft_strlen(s1), s2);
+	}
+	return (s_new);
 }
 
-void	cat_lines(t_file *file, t_lstcontainer *lines, size_t sz)
+static void	ft_fill_line_with_rest(t_gnl_file *file)
 {
-	t_list	*tmp;
-	char	*s;
-	size_t	m_sz;
+	char	*tmp;
+	char	*tmp_rest;
 
-	s = ft_strnew(ft_strlen(file->line) + sz, 0);
-	ft_strcpy(s, file->line);
-	m_sz = ft_strlen(file->line);
-	tmp = lines->firstelement;
-	while (tmp)
+	file->state = 0;
+	if (file->rest)
 	{
-		ft_strcpy(s + m_sz, tmp->content);
-		m_sz += ft_strlen(tmp->content);
-		tmp = tmp->next;
+		if ((!(tmp = ft_strchr(file->rest, '\n'))) || (tmp && !*(tmp + 1)))
+		{
+			file->cur = ft_strdup(file->rest);
+			if (tmp && !*(tmp + 1))
+			{
+				file->cur[ft_strlen(file->rest) - 1] = '\0';
+				file->state = 1;
+			}
+			ft_strdel(&(file->rest));
+		}
+		else
+		{
+			file->cur = ft_strsub(file->rest, 0, tmp - file->rest, 0);
+			tmp_rest = file->rest;
+			file->rest = ft_strdup(tmp + 1);
+			ft_strdel(&tmp_rest);
+			file->state = 1;
+		}
 	}
-	ft_lstdel(lines->firstelement, 1);
-	free(file->line);
-	file->line = NULL;
-	file->line = s;
 }
 
-void	c_read(t_file *file)
+static int	ft_read(t_gnl_file *file)
 {
-	char			*buff;
-	t_lstcontainer	*lines;
-	size_t			sz;
-	int				rd;
+	int		ret;
+	char	buf[BUFF_SIZE + 1];
+	char	*tmp;
+	char	*tmp_cur;
 
-	buff = ft_strnew(BUFF_SIZE, 0);
-	lines = lstcontainer_new();
-	sz = 0;
-	while ((rd = read(file->fd, buff, BUFF_SIZE)) > 0)
+	while ((ret = read(file->fd, buf, BUFF_SIZE)) > 0)
 	{
-		buff[rd] = '\0';
-		lstcontainer_add(lines, ft_strdup(buff));
-		sz += rd;
-		if (ft_getnextchar(buff, '\n') != -1)
-			break ;
+		buf[ret] = '\0';
+		tmp_cur = file->cur;
+		if ((tmp = ft_strchr(buf, '\n')))
+		{
+			file->state = 1;
+			file->rest = ft_strdup(tmp + 1);
+			buf[tmp - buf] = '\0';
+			file->cur = ft_strjoin_protected(file->cur, buf);
+			ft_strdel(&tmp_cur);
+			return (SUCCESS);
+		}
+		file->cur = ft_strjoin_protected(file->cur, buf);
+		ft_strdel(&tmp_cur);
 	}
-	file->state = rd;
-	cat_lines(file, lines, sz);
-	free(lines);
-	free(buff);
+	if (file->cur && file->cur[0] != '\0')
+		file->state = 1;
+	return (ret == -1 ? -1 : file->state);
 }
 
-char	*next_line(t_file *file)
+int			get_next_line(const int fd, char **line)
 {
-	char	*s;
-	int		sz;
+	static	t_gnl_file	file;
 
-	if (!file->line)
-		return (NULL);
-	sz = ft_getnextchar(file->line, '\n') - 1;
-	s = ft_strsubuntil(file->line, 0, sz, 0);
-	file->line = ft_strsubuntil(file->line, sz + 1, ft_strlen(file->line), 1);
-	return (s);
-}
-
-int		get_next_line(int fd, char **line)
-{
-	static t_lstcontainer	*fds = NULL;
-	t_list					*lfile;
-	t_file					*file;
-
-	fds = fds == NULL ? lstcontainer_new() : fds;
-	if (fd < 0 || !(lfile = get_file(fds, fd)))
-		return (-1);
-	file = lfile->content;
-	if (file->line && ft_getnextchar(file->line, '\n') == -1
-		&& file->state > 0)
-		c_read(file);
-	if (file->state < 0)
+	if (fd < 0 || !line)
+		return (FAILURE);
+	file.fd = fd;
+	ft_fill_line_with_rest(&file);
+	if (file.state != 1 && ft_read(&file) == FAILURE)
+		return (FAILURE);
+	if (file.cur != NULL)
 	{
-		free(file->line);
-		lstcontainer_remove(fds, lfile);
-		return (-1);
+		*line = ft_strdup(file.cur);
+		ft_strdel(&file.cur);
 	}
-	*line = next_line(file);
-	if (file->state == 0)
-	{
-		free(file->line);
-		lstcontainer_remove(fds, lfile);
-		return (0);
-	}
-	return (1);
+	return ((*line == NULL && file.state != 0) ? FAILURE : file.state);
 }

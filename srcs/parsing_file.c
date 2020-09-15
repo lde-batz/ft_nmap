@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_file.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 20:59:08 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 17:13:40 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/15 12:03:19 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	parsing_file(t_nmap *nmap, char *file)
 		l_hostname = get_ip_by_hostname(nmap, line, l_hostname, &len);
 		free(line);
 	}
-	free(line);
+	//free(line);
 	close(fd);
 	if (l_hostname == NULL)
 	{
