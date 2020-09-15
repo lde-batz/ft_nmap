@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/15 15:17:25 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/15 15:27:28 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ uint8_t	wait_connect(struct timeval *tv, int sec)
 	gettimeofday(&time, NULL);
 	tv_usec = tv->tv_sec * 1000000 + tv->tv_usec;
 	time_usec = time.tv_sec * 1000000 + time.tv_usec;
-	if (time_usec - tv_usec > sec * 1000000)
+	if (time_usec - tv_usec > sec * 400000)
 		return (0);
 	else
 		return (1);
