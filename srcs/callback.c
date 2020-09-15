@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/01 10:49:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/11 12:32:13 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/15 14:19:28 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ void    *scan_callback(void *callback_data)
 	t_thread_data 		*tdata;
 
 	tdata = (struct s_thread_data*)callback_data;
-	for (int i = 0; tdata->port_list[i] != 0; i++)
+	for (int i = 0; i < 1024 && tdata->port_list[i] != 0; i++)
 	{ /* for every  port */
 
 		tdata->report = create_scan_report(tdata->port_list[i]);

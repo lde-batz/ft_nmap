@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/15 12:05:00 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/15 14:10:08 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,9 @@ void	parsing(t_nmap *nmap, int argc, char **argv)
 	{
 		if (!(nmap->ports = (uint16_t*)malloc(sizeof(uint16_t) * 1024)))
 			exit_nmap(nmap, EXIT_FAILURE);
-		for(i = -1; i < 1024; i++)
+		for(i = 0; i < 1024; i++)
 			nmap->ports[i] = i + 1;
-		nmap->ports[i] = 0;
+//		nmap->ports[i] = 0;
 		nmap->ports_len = 1024;
 	}
 
