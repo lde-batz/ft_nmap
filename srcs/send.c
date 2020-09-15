@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/20 16:12:17 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/15 15:04:48 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/15 15:17:25 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,26 @@ int		checksum(unsigned short	*buf, int len)
 	return (res);
 }
 
+uint8_t	wait_connect(struct timeval *tv, int sec)
+{
+	int				tv_usec;
+	int				time_usec;
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	tv_usec = tv->tv_sec * 1000000 + tv->tv_usec;
+	time_usec = time.tv_sec * 1000000 + time.tv_usec;
+	if (time_usec - tv_usec > sec * 1000000)
+		return (0);
+	else
+		return (1);
+}
+
 void	send_tcp_packet_connect(t_thread_data *data, uint16_t port)
 {
 	int					sockfd;
 	struct sockaddr_in	daddr;
+	struct timeval		tv;
 
 /*		Initialisation du socket TCP		*/
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
@@ -55,7 +71,8 @@ void	send_tcp_packet_connect(t_thread_data *data, uint16_t port)
 /*		Envoie du packet TCP		*/
 	pthread_mutex_lock(&(g_scan->mutex));
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
-	for (int i = 0; i < 1500000; i++)
+	gettimeofday(&tv, NULL);
+	while (wait_connect(&tv, 1))
 	{
 		if (connect(sockfd, (struct sockaddr *)&daddr, sizeof(daddr)) == 0)
 		{
