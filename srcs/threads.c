@@ -6,7 +6,7 @@
 /*   By: seb <seb@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 08:33:17 by seb               #+#    #+#             */
-/*   Updated: 2020/09/15 14:12:36 by seb              ###   ########.fr       */
+/*   Updated: 2020/09/15 14:30:01 by seb              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ static uint16_t		*list_range(uint16_t *source, uint16_t am, uint16_t offset)
 	if (am == 0)
 		am = get_portnb(source);
 	
-	list = (uint16_t*)ft_memalloc(sizeof(uint16_t) * (am));
-	ft_memset(list, 0, am);
+	list = (uint16_t*)ft_memalloc(sizeof(uint16_t) * (am + 2));
+	ft_memset(list, 0, am + 2);
 	
-	for (int i = 0; i < am; i++)
+	for (int i = 0; i < 1024 && i < am; i++)
 		list[i] = source[i + offset];
 		
 	return (list);
