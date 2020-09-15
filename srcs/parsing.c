@@ -6,7 +6,7 @@
 /*   By: lde-batz <lde-batz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/15 16:54:06 by lde-batz          #+#    #+#             */
-/*   Updated: 2020/09/12 17:12:15 by lde-batz         ###   ########.fr       */
+/*   Updated: 2020/09/14 18:36:36 by lde-batz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ void	parsing(t_nmap *nmap, int argc, char **argv)
 		for(i = -1; i < 1024; i++)
 			nmap->ports[i] = i + 1;
 		nmap->ports[i] = 0;
+		nmap->ports_len = 1024;
 	}
 
 }
