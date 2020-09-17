@@ -10,8 +10,10 @@ Ft_nmap is port scanning project for 42 school.
 The goal of this project is to familiarize ourself with the libpcap and the libpthread, aswell as common portscanning techniques and important TCP/IP knowledge.
 
 ## Building
+
+Compile with clang:
   
-   ``$> make``
+   ``$> make CC=clang``
    
    
 ## Running ft_nmap
