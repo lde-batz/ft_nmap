@@ -107,7 +107,7 @@ int    portscan(t_thread_data *data, uint8_t type, uint16_t port)
 	}
 
 	/* Récupération du device, et des paremètres résaux */
-	device = get_pcap_device(&net, &mask, errbuf);
+	device = get_pcap_device(data, &net, &mask, errbuf);
 
 	/* Obtention de l'ip du device */
 	get_device_ip(data, device);

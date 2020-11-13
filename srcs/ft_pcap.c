@@ -12,7 +12,7 @@
 
 #include "ft_nmap.h"
 
-char	*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024])
+char	*get_pcap_device(t_thread_data *dt, bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024])
 {
 	char 		*device;
 	pcap_if_t	*interfaces;
@@ -26,7 +26,10 @@ char	*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024])
 		pthread_mutex_unlock(&(g_scan->mutex));
 		pthread_exit(NULL);
 	}
-	device = ft_strdup(interfaces->name);
+	if (ft_strncmp(dt->ipv4, "127.0.0.1", 10) == 0 || ft_strncmp(dt->ipv4, "127.0.1.1", 10) == 0)
+		device = ft_strdup(interfaces->next->name);
+	else
+		device = ft_strdup(interfaces->name);
 	pcap_freealldevs(interfaces);
 	/* Détéction et stockage du réseau & netmask */
 	if (pcap_lookupnet(device, net, mask, errbuf) != 0)

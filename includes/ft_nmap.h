@@ -167,7 +167,7 @@ t_thread_data	*allocate_thread_data(t_scan *scan, uint16_t amount, uint16_t offs
 void			dispatch_threads(t_nmap *nmap, t_scan *scan);
 void			*scan_callback(void *data);
 
-char			*get_pcap_device(bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024]);
+char			*get_pcap_device(t_thread_data *dt, bpf_u_int32 *net, bpf_u_int32 *mask, char errbuf[1024]);
 pcap_t			*open_pcap_device(char *device, char errbuf[1024]);
 void			apply_pcap_filter(t_thread_data *dt, pcap_t *handle, bpf_u_int32 net, uint16_t port);
 
